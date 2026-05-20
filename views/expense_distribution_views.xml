@@ -1,0 +1,351 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+    <!-- ═══════════════════════════════════════════════════════
+         Emergency Distribution Wizard – Form View
+    ═══════════════════════════════════════════════════════ -->
+    <record id="view_nahj_distribute_expense_wizard_form" model="ir.ui.view">
+        <field name="name">nahj.distribute.expense.wizard.form</field>
+        <field name="model">nahj.distribute.expense.wizard</field>
+        <field name="arch" type="xml">
+            <form string="Distribute Emergency Expense | توزيع مصروف طارئ">
+                <sheet>
+
+                    <!-- ── Step 1: Configuration ── -->
+                    <div invisible="result_state != 'draft'">
+                        <div class="alert alert-warning" role="alert">
+                            <strong>💡 Emergency Expense Distribution | توزيع مصروف طارئ</strong><br/>
+                            Enter the total expense amount and how it should be split across units.
+                            You can review and adjust individual amounts before confirming.<br/>
+                            <em>أدخل المبلغ الإجمالي وطريقة التوزيع على الوحدات. يمكنك مراجعة وتعديل الحصص قبل التأكيد.</em>
+                        </div>
+                        <group>
+                            <group string="Expense Details | تفاصيل المصروف">
+                                <field name="tower_id" string="Tower | البرج"
+                                       options="{'no_quick_create': true, 'no_create': true}"/>
+                                <field name="description" string="Description | الوصف"/>
+                                <field name="date" string="Date | التاريخ"/>
+                                <field name="total_amount" string="Total Amount | المبلغ الإجمالي"/>
+                            </group>
+                            <group string="Distribution Settings | إعدادات التوزيع">
+                                <field name="distribution_method"
+                                       string="Method | الطريقة"/>
+                                <field name="unit_filter"
+                                       string="Apply To | طبّق على"/>
+                            </group>
+                        </group>
+                        <group string="Notes | ملاحظات">
+                            <field name="notes"
+                                   placeholder="Optional notes… | ملاحظات اختيارية…"
+                                   nolabel="1"/>
+                        </group>
+                    </div>
+
+                    <!-- ── Step 2: Preview ── -->
+                    <div invisible="result_state != 'preview'">
+                        <div class="alert alert-info" role="alert">
+                            <strong>📋 Review Distribution | مراجعة التوزيع</strong><br/>
+                            Review the amounts below. You can uncheck units to exclude them
+                            or manually edit individual amounts. Click <b>Confirm</b> when ready.<br/>
+                            <em>راجع المبالغ أدناه. يمكنك إلغاء تحديد وحدات لاستبعادها أو تعديل الحصص يدوياً. اضغط <b>تأكيد</b> عند الاستعداد.</em>
+                        </div>
+
+                        <!-- Summary bar -->
+                        <group>
+                            <group string="Summary | الملخص">
+                                <field name="tower_id" string="Tower | البرج" readonly="1"/>
+                                <field name="description" string="Description | الوصف" readonly="1"/>
+                                <field name="total_amount"
+                                       string="Total Amount | المبلغ الإجمالي" readonly="1"/>
+                                <field name="distribution_method"
+                                       string="Method | الطريقة" readonly="1"/>
+                            </group>
+                            <group string="Preview Stats | إحصائيات المعاينة">
+                                <field name="included_count"
+                                       string="Units Included | الوحدات المشمولة"
+                                       readonly="1"/>
+                                <field name="total_distributed"
+                                       string="Total Distributed | إجمالي الموزَّع"
+                                       readonly="1"/>
+                                <field name="rounding_diff"
+                                       string="Rounding Difference | فرق التقريب"
+                                       readonly="1"
+                                       invisible="rounding_diff == 0"
+                                       decoration-warning="rounding_diff != 0"/>
+                            </group>
+                        </group>
+
+                        <!-- Distribution Lines -->
+                        <field name="line_ids" nolabel="1">
+                            <tree editable="bottom"
+                                  decoration-muted="not include"
+                                  string="Unit Distribution | توزيع الوحدات">
+                                <field name="include" string="✓"/>
+                                <field name="floor" string="Floor | الطابق" readonly="1"/>
+                                <field name="unit_id" string="Unit | الوحدة"
+                                       readonly="1"
+                                       options="{'no_quick_create': true, 'no_create': true}"/>
+                                <field name="resident_id" string="Resident | الساكن"
+                                       readonly="1"/>
+                                <field name="monthly_subscription"
+                                       string="Monthly Sub. | الاشتراك"
+                                       readonly="1" optional="show"/>
+                                <field name="amount" string="Share | الحصة"/>
+                            </tree>
+                        </field>
+                    </div>
+
+                    <!-- ── Step 3: Done ── -->
+                    <div invisible="result_state != 'done'">
+                        <div class="alert alert-success" role="alert">
+                            ✅ Distribution created successfully! | تم إنشاء التوزيع بنجاح!
+                        </div>
+                        <group>
+                            <field name="distribution_id"
+                                   string="Distribution Record | سجل التوزيع"
+                                   readonly="1"/>
+                        </group>
+                    </div>
+
+                    <field name="result_state" invisible="1"/>
+                </sheet>
+
+                <footer>
+                    <!-- Step 1 buttons -->
+                    <button name="action_compute_preview" type="object"
+                            string="Next: Preview Distribution | التالي: معاينة التوزيع"
+                            class="btn-primary"
+                            invisible="result_state != 'draft'"/>
+                    <!-- Step 2 buttons -->
+                    <button name="action_confirm" type="object"
+                            string="✓ Confirm &amp; Create | تأكيد وإنشاء"
+                            class="btn-primary"
+                            invisible="result_state != 'preview'"/>
+                    <button name="action_back_to_draft" type="object"
+                            string="← Back | رجوع"
+                            class="btn-secondary"
+                            invisible="result_state != 'preview'"/>
+                    <button string="Cancel | إلغاء" class="btn-secondary"
+                            special="cancel"
+                            invisible="result_state == 'done'"/>
+                    <button string="Close | إغلاق" class="btn-secondary"
+                            special="cancel"
+                            invisible="result_state != 'done'"/>
+                </footer>
+            </form>
+        </field>
+    </record>
+
+    <!-- ═══════════════════════════════════════════════════════
+         Wizard – Action
+    ═══════════════════════════════════════════════════════ -->
+    <record id="action_nahj_distribute_expense_wizard" model="ir.actions.act_window">
+        <field name="name">Distribute Emergency Expense | توزيع مصروف طارئ</field>
+        <field name="res_model">nahj.distribute.expense.wizard</field>
+        <field name="view_mode">form</field>
+        <field name="target">new</field>
+        <field name="view_id" ref="view_nahj_distribute_expense_wizard_form"/>
+    </record>
+
+    <!-- ═══════════════════════════════════════════════════════
+         Expense Distribution – List View
+    ═══════════════════════════════════════════════════════ -->
+    <record id="view_nahj_expense_distribution_list" model="ir.ui.view">
+        <field name="name">nahj.expense.distribution.list</field>
+        <field name="model">nahj.expense.distribution</field>
+        <field name="arch" type="xml">
+            <tree string="Emergency Distributions | التوزيعات الطارئة"
+                  decoration-success="unpaid_count == 0 and unit_count > 0"
+                  decoration-warning="unpaid_count > 0">
+                <field name="date" string="Date | التاريخ"/>
+                <field name="tower_id" string="Tower | البرج"/>
+                <field name="name" string="Description | الوصف"/>
+                <field name="distribution_method" string="Method | الطريقة"/>
+                <field name="total_amount" string="Total | الإجمالي"/>
+                <field name="unit_count" string="Units | وحدات"/>
+                <field name="paid_count" string="Paid | مدفوع"
+                       decoration-success="paid_count == unit_count and unit_count > 0"/>
+                <field name="unpaid_count" string="Unpaid | غير مدفوع"
+                       decoration-danger="unpaid_count > 0"/>
+                <field name="total_collected" string="Collected | محصّل"
+                       optional="show"/>
+                <field name="collection_rate" string="Rate % | النسبة"
+                       widget="percentage" optional="show"/>
+            </tree>
+        </field>
+    </record>
+
+    <!-- ═══════════════════════════════════════════════════════
+         Expense Distribution – Form View
+    ═══════════════════════════════════════════════════════ -->
+    <record id="view_nahj_expense_distribution_form" model="ir.ui.view">
+        <field name="name">nahj.expense.distribution.form</field>
+        <field name="model">nahj.expense.distribution</field>
+        <field name="arch" type="xml">
+            <form string="Emergency Distribution | توزيع طارئ">
+                <header>
+                    <button name="action_mark_all_paid" type="object"
+                            string="✓ Mark All Paid | تسجيل الكل كمدفوع"
+                            class="btn-primary"
+                            confirm="Mark all unpaid charges as paid? | تسجيل جميع الرسوم غير المدفوعة كمدفوعة؟"
+                            invisible="unpaid_count == 0"/>
+                </header>
+                <sheet>
+                    <!-- Smart Buttons -->
+                    <div class="oe_button_box" name="button_box">
+                        <button name="action_view_charges" type="object"
+                                class="oe_stat_button" icon="fa-list">
+                            <div class="o_stat_info">
+                                <span class="o_stat_value">
+                                    <field name="unit_count"/>
+                                </span>
+                                <span class="o_stat_text">Units | وحدات</span>
+                            </div>
+                        </button>
+                        <button name="action_view_charges" type="object"
+                                class="oe_stat_button" icon="fa-check-circle">
+                            <div class="o_stat_info">
+                                <span class="o_stat_value"
+                                      style="color: #27ae60;">
+                                    <field name="paid_count"/>
+                                </span>
+                                <span class="o_stat_text">Paid | مدفوع</span>
+                            </div>
+                        </button>
+                        <button name="action_view_charges" type="object"
+                                class="oe_stat_button" icon="fa-exclamation-circle">
+                            <div class="o_stat_info">
+                                <span class="o_stat_value"
+                                      style="color: #e74c3c;">
+                                    <field name="unpaid_count"/>
+                                </span>
+                                <span class="o_stat_text">Unpaid | غير مدفوع</span>
+                            </div>
+                        </button>
+                    </div>
+
+                    <!-- Title -->
+                    <div class="oe_title">
+                        <label for="name" string="Description | الوصف"/>
+                        <h1>
+                            <field name="name"
+                                   placeholder="e.g. Emergency elevator repair | إصلاح طارئ للأسانسير"/>
+                        </h1>
+                    </div>
+
+                    <group>
+                        <group string="Distribution Info | بيانات التوزيع">
+                            <field name="tower_id" string="Tower | البرج"
+                                   options="{'no_quick_create': true, 'no_create': true}"/>
+                            <field name="date" string="Date | التاريخ"/>
+                            <field name="distribution_method"
+                                   string="Method | الطريقة"/>
+                        </group>
+                        <group string="Financial Summary | الملخص المالي">
+                            <field name="total_amount"
+                                   string="Total Amount | المبلغ الإجمالي"/>
+                            <field name="total_collected"
+                                   string="Total Collected | المحصّل"
+                                   readonly="1"/>
+                            <field name="collection_rate"
+                                   string="Collection Rate | نسبة التحصيل"
+                                   readonly="1" widget="percentage"/>
+                        </group>
+                    </group>
+
+                    <group string="Notes | ملاحظات" invisible="not notes">
+                        <field name="notes" nolabel="1" readonly="1"/>
+                    </group>
+
+                    <!-- Charges Tab -->
+                    <notebook>
+                        <page string="Unit Charges | رسوم الوحدات" name="charges">
+                            <field name="charge_ids"
+                                   context="{'default_distribution_id': id}">
+                                <tree editable="bottom"
+                                      decoration-success="state == 'paid'"
+                                      decoration-danger="state == 'unpaid'"
+                                      string="Unit Charges | رسوم الوحدات">
+                                    <field name="unit_id"
+                                           string="Unit | الوحدة"
+                                           options="{'no_quick_create': true, 'no_create': true}"/>
+                                    <field name="resident_id"
+                                           string="Resident | الساكن"
+                                           readonly="1"/>
+                                    <field name="amount" string="Amount | المبلغ"/>
+                                    <field name="state" widget="badge"
+                                           decoration-success="state == 'paid'"
+                                           decoration-danger="state == 'unpaid'"/>
+                                    <field name="payment_method"
+                                           string="Method | الطريقة"
+                                           invisible="state == 'unpaid'"
+                                           optional="show"/>
+                                    <field name="payment_date"
+                                           string="Paid On | تاريخ الدفع"
+                                           invisible="state == 'unpaid'"
+                                           optional="show"/>
+                                    <button name="action_mark_paid" type="object"
+                                            string="Mark Paid | سجّل مدفوع"
+                                            class="btn-sm btn-success"
+                                            invisible="state == 'paid'"/>
+                                    <button name="action_mark_unpaid" type="object"
+                                            string="Reset | إعادة"
+                                            class="btn-sm btn-secondary"
+                                            invisible="state == 'unpaid'"/>
+                                </tree>
+                            </field>
+                        </page>
+                        <page string="Audit Trail | سجل التدقيق" name="audit_tab">
+                            <group col="4">
+                                <field name="create_uid" string="Created by | أنشأ بواسطة" readonly="1"/>
+                                <field name="create_date" string="Created on | تاريخ الإنشاء" readonly="1"/>
+                                <field name="write_uid" string="Last modified by | آخر تعديل بواسطة" readonly="1"/>
+                                <field name="write_date" string="Last modified on | تاريخ آخر تعديل" readonly="1"/>
+                            </group>
+                        </page>
+                    </notebook>
+                </sheet>
+                <chatter/>
+            </form>
+        </field>
+    </record>
+
+    <!-- ═══════════════════════════════════════════════════════
+         Expense Distribution – Search View
+    ═══════════════════════════════════════════════════════ -->
+    <record id="view_nahj_expense_distribution_search" model="ir.ui.view">
+        <field name="name">nahj.expense.distribution.search</field>
+        <field name="model">nahj.expense.distribution</field>
+        <field name="arch" type="xml">
+            <search string="Search Distributions | بحث التوزيعات">
+                <field name="name" string="Description | الوصف"/>
+                <field name="tower_id" string="Tower | البرج"/>
+                <separator/>
+                <filter name="has_unpaid" string="Has Unpaid | يوجد غير مدفوع"
+                        domain="[('unpaid_count', '>', 0)]"/>
+                <filter name="fully_collected" string="Fully Collected | محصّل بالكامل"
+                        domain="[('unpaid_count', '=', 0), ('unit_count', '>', 0)]"/>
+                <separator/>
+                <group expand="0" string="Group By | تجميع حسب">
+                    <filter name="group_tower" string="Tower | البرج"
+                            context="{'group_by': 'tower_id'}"/>
+                    <filter name="group_method" string="Method | الطريقة"
+                            context="{'group_by': 'distribution_method'}"/>
+                    <filter name="group_date" string="Date | التاريخ"
+                            context="{'group_by': 'date:month'}"/>
+                </group>
+            </search>
+        </field>
+    </record>
+
+    <!-- ═══════════════════════════════════════════════════════
+         Expense Distribution – Main Action
+    ═══════════════════════════════════════════════════════ -->
+    <record id="action_nahj_expense_distribution" model="ir.actions.act_window">
+        <field name="name">Emergency Distributions | التوزيعات الطارئة</field>
+        <field name="res_model">nahj.expense.distribution</field>
+        <field name="view_mode">list,form</field>
+        <field name="search_view_id" ref="view_nahj_expense_distribution_search"/>
+    </record>
+
+</odoo>

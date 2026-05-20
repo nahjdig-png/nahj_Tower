@@ -1,0 +1,128 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+<!-- ═══════════════════════════════════════════════════════════
+     SUBSCRIPTION RECEIPT – QWeb Template
+═══════════════════════════════════════════════════════════ -->
+<record id="report_subscription_receipt_template" model="ir.ui.view">
+  <field name="name">nahj_tower.report_subscription_receipt</field>
+  <field name="key">nahj_tower.report_subscription_receipt</field>
+  <field name="type">qweb</field>
+  <field name="arch" type="xml">
+  <t t-call="web.html_container">
+    <t t-foreach="docs" t-as="doc">
+      <t t-call="web.external_layout">
+        <div class="page" style="font-family: 'Cairo', 'Segoe UI', sans-serif; direction: rtl;">
+
+          <!-- Header Band -->
+          <div style="background:#1a2942; color:#fff; padding:18px 24px; border-radius:8px; margin-bottom:20px; display:flex; justify-content:space-between; align-items:center;">
+            <div>
+              <h2 style="margin:0; font-size:20px;">🏢 نهج تاور – Nahj Tower</h2>
+              <div style="font-size:12px; opacity:0.8; margin-top:4px;">
+                <t t-esc="doc.tower_id.name"/> –
+                <t t-if="doc.tower_id.address"><t t-esc="doc.tower_id.address"/></t>
+              </div>
+            </div>
+            <div style="text-align:left; direction:ltr;">
+              <div style="font-size:18px; font-weight:bold;">RECEIPT</div>
+              <div style="font-size:11px; opacity:0.8;">إيصال دفع</div>
+              <div style="font-size:12px; margin-top:4px;"># <t t-esc="doc.id"/></div>
+            </div>
+          </div>
+
+          <!-- Status Badge -->
+          <div style="text-align:center; margin-bottom:18px;">
+            <t t-if="doc.state == 'paid'">
+              <span style="background:#27ae60; color:#fff; padding:6px 24px; border-radius:20px; font-size:14px; font-weight:bold;">
+                ✅ مدفوع – PAID
+              </span>
+            </t>
+            <t t-else="">
+              <span style="background:#e74c3c; color:#fff; padding:6px 24px; border-radius:20px; font-size:14px; font-weight:bold;">
+                ❌ غير مدفوع – UNPAID
+              </span>
+            </t>
+          </div>
+
+          <!-- Details Table -->
+          <table style="width:100%; border-collapse:collapse; font-size:13px;">
+            <tr style="background:#f8fafc;">
+              <td style="padding:10px 14px; border:1px solid #dde3ea; font-weight:bold; width:40%;">البرج / Tower</td>
+              <td style="padding:10px 14px; border:1px solid #dde3ea;"><t t-esc="doc.tower_id.name"/></td>
+            </tr>
+            <tr>
+              <td style="padding:10px 14px; border:1px solid #dde3ea; font-weight:bold; background:#f8fafc;">الوحدة / Unit</td>
+              <td style="padding:10px 14px; border:1px solid #dde3ea;">
+                <t t-esc="doc.unit_id.name"/> – الطابق <t t-esc="doc.unit_id.floor"/>
+              </td>
+            </tr>
+            <tr style="background:#f8fafc;">
+              <td style="padding:10px 14px; border:1px solid #dde3ea; font-weight:bold;">الساكن / Resident</td>
+              <td style="padding:10px 14px; border:1px solid #dde3ea;">
+                <t t-esc="doc.unit_id.resident_id.name or '—'"/>
+                <t t-if="doc.unit_id.resident_id.phone">
+                  <span style="color:#7f8c8d; font-size:11px;"> – <t t-esc="doc.unit_id.resident_id.phone"/></span>
+                </t>
+              </td>
+            </tr>
+            <tr>
+              <td style="padding:10px 14px; border:1px solid #dde3ea; font-weight:bold; background:#f8fafc;">الفترة / Period</td>
+              <td style="padding:10px 14px; border:1px solid #dde3ea;">
+                <t t-esc="months_ar.get(doc.month, doc.month)"/> /
+                <t t-esc="months_en.get(doc.month, doc.month)"/>
+                <t t-esc="doc.year"/>
+              </td>
+            </tr>
+            <tr style="background:#f8fafc;">
+              <td style="padding:10px 14px; border:1px solid #dde3ea; font-weight:bold;">تاريخ الدفع / Payment Date</td>
+              <td style="padding:10px 14px; border:1px solid #dde3ea;">
+                <t t-if="doc.payment_date">
+                  <t t-esc="doc.payment_date"/>
+                </t>
+                <t t-else="">—</t>
+              </td>
+            </tr>
+          </table>
+
+          <!-- Amount Box -->
+          <div style="background:#1a2942; color:#fff; text-align:center; padding:22px; margin:20px 0; border-radius:8px;">
+            <div style="font-size:12px; opacity:0.8; margin-bottom:4px;">المبلغ المدفوع / Amount</div>
+            <div style="font-size:32px; font-weight:800; direction:ltr;">
+              <t t-esc="'{:,.2f}'.format(doc.amount)"/>
+            </div>
+          </div>
+
+          <!-- Notes -->
+          <t t-if="doc.notes">
+            <div style="border:1px solid #dde3ea; border-radius:6px; padding:10px 14px; margin-bottom:16px; font-size:12px; color:#555;">
+              <b>ملاحظات:</b> <t t-esc="doc.notes"/>
+            </div>
+          </t>
+
+          <!-- Footer -->
+          <div style="border-top:2px solid #1a2942; margin-top:24px; padding-top:12px; display:flex; justify-content:space-between; font-size:11px; color:#7f8c8d;">
+            <span>نهج تاور – Nahj Tower Management System</span>
+            <span>تاريخ الطباعة: <t t-esc="today"/></span>
+          </div>
+
+        </div>
+      </t>
+    </t>
+  </t>
+  </field>
+</record>
+
+<!-- Report Action -->
+<record id="action_report_subscription_receipt" model="ir.actions.report">
+  <field name="name">Subscription Receipt / إيصال اشتراك</field>
+  <field name="model">nahj.subscription</field>
+  <field name="report_type">qweb-pdf</field>
+  <field name="report_name">nahj_tower.report_subscription_receipt</field>
+  <field name="report_file">nahj_tower.report_subscription_receipt</field>
+  <field name="print_report_name">'Receipt-%s-%s-%s' % (object.unit_id.name, object.month, object.year)</field>
+  <field name="binding_model_id" ref="model_nahj_subscription"/>
+  <field name="binding_type">report</field>
+  <field name="paperformat_id" ref="base.paperformat_euro"/>
+</record>
+
+</odoo>

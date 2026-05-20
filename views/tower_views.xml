@@ -1,0 +1,371 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+    <!-- ═══════════════════════════════════════════════════════
+         Tower – Kanban View (Dashboard)
+    ═══════════════════════════════════════════════════════ -->
+    <record id="view_nahj_tower_kanban" model="ir.ui.view">
+        <field name="name">nahj.tower.kanban</field>
+        <field name="model">nahj.tower</field>
+        <field name="arch" type="xml">
+            <kanban class="o_kanban_small_column">
+                <field name="name"/>
+                <field name="city"/>
+                <field name="unit_count"/>
+                <field name="occupied_count"/>
+                <field name="vacant_count"/>
+                <field name="total_subscriptions"/>
+                <field name="total_expenses"/>
+                <field name="balance"/>
+                <field name="overdue_count"/>
+                <templates>
+                    <t t-name="kanban-box">
+                        <div class="o_kanban_record_top mb-0">
+                            <div class="o_kanban_record_headings">
+                                <strong class="o_kanban_record_title fs-5">
+                                    <field name="name"/>
+                                </strong>
+                                <t t-if="record.city.value">
+                                    <span class="o_kanban_record_subtitle text-muted">
+                                        <field name="city"/>
+                                    </span>
+                                </t>
+                            </div>
+                        </div>
+                        <div class="mt-2">
+                            <div class="row g-1 text-center">
+                                <div class="col-4">
+                                    <button type="object" name="action_view_units"
+                                            class="btn p-0 border-0 w-100 d-block">
+                                        <div class="border rounded p-1 bg-light">
+                                            <div class="fw-bold text-primary fs-5">
+                                                <field name="unit_count"/>
+                                            </div>
+                                            <small class="text-muted">Units | الوحدات</small>
+                                        </div>
+                                    </button>
+                                </div>
+                                <div class="col-4">
+                                    <button type="object" name="action_view_occupied_units"
+                                            class="btn p-0 border-0 w-100 d-block">
+                                        <div class="border rounded p-1 bg-light">
+                                            <div class="fw-bold text-success fs-5">
+                                                <field name="occupied_count"/>
+                                            </div>
+                                            <small class="text-muted">Occupied | مشغولة</small>
+                                        </div>
+                                    </button>
+                                </div>
+                                <div class="col-4">
+                                    <button type="object" name="action_view_vacant_units"
+                                            class="btn p-0 border-0 w-100 d-block">
+                                        <div class="border rounded p-1 bg-light">
+                                            <div class="fw-bold text-secondary fs-5">
+                                                <field name="vacant_count"/>
+                                            </div>
+                                            <small class="text-muted">Vacant | شاغرة</small>
+                                        </div>
+                                    </button>
+                                </div>
+                            </div>
+                            <div class="row g-1 text-center mt-1">
+                                <div class="col-6">
+                                    <button type="object" name="action_view_paid_subscriptions"
+                                            class="btn p-0 border-0 w-100 d-block">
+                                        <div class="border rounded p-1">
+                                            <div class="fw-bold text-success">
+                                                <field name="total_subscriptions" widget="monetary"
+                                                       options="{'currency_field': false}"/>
+                                            </div>
+                                            <small class="text-muted">Subscriptions | الاشتراكات</small>
+                                        </div>
+                                    </button>
+                                </div>
+                                <div class="col-6">
+                                    <button type="object" name="action_view_expenses"
+                                            class="btn p-0 border-0 w-100 d-block">
+                                        <div class="border rounded p-1">
+                                            <div class="fw-bold text-danger">
+                                                <field name="total_expenses" widget="monetary"
+                                                       options="{'currency_field': false}"/>
+                                            </div>
+                                            <small class="text-muted">Expenses | المصاريف</small>
+                                        </div>
+                                    </button>
+                                </div>
+                            </div>
+                            <div class="row g-1 text-center mt-1">
+                                <div class="col-6">
+                                    <div class="border rounded p-1">
+                                        <div t-attf-class="fw-bold #{record.balance.raw_value >= 0 ? 'text-success' : 'text-danger'}">
+                                            <field name="balance" widget="monetary"
+                                                   options="{'currency_field': false}"/>
+                                        </div>
+                                        <small class="text-muted">Balance | الرصيد</small>
+                                    </div>
+                                </div>
+                                <div class="col-6">
+                                    <button type="object" name="action_view_overdue_subscriptions"
+                                            class="btn p-0 border-0 w-100 d-block">
+                                        <div class="border rounded p-1">
+                                            <div class="fw-bold text-warning">
+                                                <field name="overdue_count"/>
+                                            </div>
+                                            <small class="text-muted">Overdue | متأخرة</small>
+                                        </div>
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                    </t>
+                </templates>
+            </kanban>
+        </field>
+    </record>
+
+    <!-- ═══════════════════════════════════════════════════════
+         Tower – List View
+    ═══════════════════════════════════════════════════════ -->
+    <record id="view_nahj_tower_list" model="ir.ui.view">
+        <field name="name">nahj.tower.list</field>
+        <field name="model">nahj.tower</field>
+        <field name="arch" type="xml">
+            <tree string="Towers | الأبراج">
+                <field name="name"/>
+                <field name="city"/>
+                <field name="unit_count" string="Units | الوحدات"/>
+                <field name="occupied_count" string="Occupied | مشغولة"/>
+                <field name="vacant_count" string="Vacant | شاغرة"/>
+                <field name="total_subscriptions" string="Subscriptions | الاشتراكات" optional="show"/>
+                <field name="total_expenses" string="Expenses | المصاريف" optional="show"/>
+                <field name="balance" string="Balance | الرصيد" optional="show"/>
+                <field name="overdue_count" string="Overdue | المتأخرة" optional="show"/>
+            </tree>
+        </field>
+    </record>
+
+    <!-- ═══════════════════════════════════════════════════════
+         Tower – Form View
+    ═══════════════════════════════════════════════════════ -->
+    <record id="view_nahj_tower_form" model="ir.ui.view">
+        <field name="name">nahj.tower.form</field>
+        <field name="model">nahj.tower</field>
+        <field name="arch" type="xml">
+            <form string="Tower | البرج">
+                <sheet>
+                    <!-- Smart Buttons -->
+                    <div class="oe_button_box" name="button_box">
+                        <button name="action_view_units" type="object"
+                                class="oe_stat_button" icon="fa-home">
+                            <div class="o_stat_info">
+                                <span class="o_stat_value">
+                                    <field name="unit_count"/>
+                                </span>
+                                <span class="o_stat_text">Units | الوحدات</span>
+                            </div>
+                        </button>
+                        <button name="action_view_occupied_units" type="object"
+                                class="oe_stat_button" icon="fa-user">
+                            <div class="o_stat_info">
+                                <span class="o_stat_value">
+                                    <field name="occupied_count"/>
+                                </span>
+                                <span class="o_stat_text">Occupied | مشغولة</span>
+                            </div>
+                        </button>
+                        <button name="action_view_vacant_units" type="object"
+                                class="oe_stat_button" icon="fa-home">
+                            <div class="o_stat_info">
+                                <span class="o_stat_value">
+                                    <field name="vacant_count"/>
+                                </span>
+                                <span class="o_stat_text">Vacant | شاغرة</span>
+                            </div>
+                        </button>
+                        <button name="action_view_paid_subscriptions" type="object"
+                                class="oe_stat_button" icon="fa-credit-card">
+                            <div class="o_stat_info">
+                                <span class="o_stat_value">
+                                    <field name="total_subscriptions" widget="monetary"
+                                           options="{'currency_field': false}"/>
+                                </span>
+                                <span class="o_stat_text">Collected | المحصّل</span>
+                            </div>
+                        </button>
+                        <button name="action_view_overdue_subscriptions" type="object"
+                                class="oe_stat_button" icon="fa-exclamation-circle">
+                            <div class="o_stat_info">
+                                <span class="o_stat_value">
+                                    <field name="overdue_count"/>
+                                </span>
+                                <span class="o_stat_text">Overdue | متأخرة</span>
+                            </div>
+                        </button>
+                        <button name="action_view_expenses" type="object"
+                                class="oe_stat_button" icon="fa-money">
+                            <div class="o_stat_info">
+                                <span class="o_stat_value">
+                                    <field name="total_expenses" widget="monetary"
+                                           options="{'currency_field': false}"/>
+                                </span>
+                                <span class="o_stat_text">Expenses | المصاريف</span>
+                            </div>
+                        </button>
+                        <button name="action_view_assets" type="object"
+                                class="oe_stat_button" icon="fa-cog">
+                            <div class="o_stat_info">
+                                <span class="o_stat_value">
+                                    <field name="asset_count"/>
+                                </span>
+                                <span class="o_stat_text">Assets | الأصول</span>
+                            </div>
+                        </button>
+                    </div>
+
+                    <!-- Title -->
+                    <div class="oe_title">
+                        <label for="name" string="Tower Name | اسم البرج"/>
+                        <h1>
+                            <field name="name" placeholder="Tower Name | اسم البرج…"/>
+                        </h1>
+                    </div>
+
+                    <!-- Main Fields -->
+                    <group>
+                        <group string="Basic Information | المعلومات الأساسية">
+                            <field name="address" string="Address | العنوان" placeholder="Address…"/>
+                            <field name="city" string="City | المدينة" placeholder="City…"/>
+                            <field name="late_fee_percent"
+                                   string="Late Fee % | نسبة الغرامة %"/>
+                        </group>
+                        <group string="Financial Summary | الملخص المالي">
+                            <field name="total_subscriptions" string="Subscriptions Collected | الاشتراكات المحصلة"/>
+                            <field name="total_expenses" string="Total Expenses | إجمالي المصاريف"/>
+                            <field name="balance" string="Current Balance | الرصيد الحالي"/>
+                            <field name="overdue_count" string="Overdue Units | وحدات متأخرة"/>
+                        </group>
+                    </group>
+
+                    <!-- Unit Statistics -->
+                    <group string="Unit Statistics | إحصائيات الوحدات">
+                        <group>
+                            <field name="unit_count" string="Total Units | إجمالي الوحدات"/>
+                            <field name="occupied_count" string="Occupied | مشغولة"/>
+                            <field name="vacant_count" string="Vacant | شاغرة"/>
+                        </group>
+                    </group>
+
+                    <!-- Wizard Buttons -->
+                    <div style="padding: 8px 0;">
+                        <button name="%(nahj_Tower.action_generate_subscriptions_wizard)d"
+                                type="action"
+                                string="Generate Subscriptions | توليد الاشتراكات"
+                                class="btn btn-primary"
+                                context="{'default_tower_id': id}"/>
+                        <button name="%(nahj_Tower.action_nahj_monthly_report_wizard)d"
+                                type="action"
+                                string="Monthly Report | التقرير الشهري"
+                                class="btn btn-secondary"
+                                context="{'default_tower_id': id}"/>
+                        <button name="%(nahj_Tower.action_nahj_import_wizard)d"
+                                type="action"
+                                string="Import Units | استيراد وحدات"
+                                class="btn btn-secondary"
+                                context="{'default_tower_id': id}"/>
+                    </div>
+
+                    <!-- Tabs -->
+                    <notebook>
+                        <page string="Units | الوحدات" name="units_tab">
+                            <field name="unit_ids" context="{'default_tower_id': id}">
+                                <tree string="Units | الوحدات" editable="bottom">
+                                    <field name="name" string="Unit No. | رقم الوحدة"/>
+                                    <field name="floor" string="Floor | الطابق"/>
+                                    <field name="state" widget="badge"
+                                           decoration-success="state == 'occupied'"
+                                           decoration-muted="state == 'vacant'"/>
+                                    <field name="resident_id" string="Resident | الساكن" optional="show"/>
+                                    <field name="monthly_subscription" string="Subscription | الاشتراك"/>
+                                    <field name="unpaid_count" string="Unpaid | غير مدفوع" optional="show"/>
+                                </tree>
+                            </field>
+                        </page>
+                        <page string="Expenses | المصاريف" name="expenses_tab">
+                            <field name="expense_ids" context="{'default_tower_id': id}">
+                                <tree string="Expenses | المصاريف" editable="bottom">
+                                    <field name="date" string="Date | التاريخ"/>
+                                    <field name="name" string="Description | الوصف"/>
+                                    <field name="category_id" string="Category | الفئة"
+                                           options="{'no_quick_create': true, 'no_create': true}"/>
+                                    <field name="amount" string="Amount | المبلغ"/>
+                                </tree>
+                            </field>
+                        </page>
+                        <page string="Notes | الملاحظات" name="notes_tab">
+                            <field name="notes" placeholder="Add notes here… | أضف ملاحظات هنا…"/>
+                        </page>
+                        <page string="Audit Trail | سجل التدقيق" name="audit_tab">
+                            <group col="4">
+                                <field name="create_uid" string="Created by | أنشأ بواسطة" readonly="1"/>
+                                <field name="create_date" string="Created on | تاريخ الإنشاء" readonly="1"/>
+                                <field name="write_uid" string="Last modified by | آخر تعديل بواسطة" readonly="1"/>
+                                <field name="write_date" string="Last modified on | تاريخ آخر تعديل" readonly="1"/>
+                            </group>
+                        </page>
+                    </notebook>
+                </sheet>
+                <chatter/>
+            </form>
+        </field>
+    </record>
+
+    <!-- ═══════════════════════════════════════════════════════
+         Tower – Search View
+    ═══════════════════════════════════════════════════════ -->
+    <record id="view_nahj_tower_search" model="ir.ui.view">
+        <field name="name">nahj.tower.search</field>
+        <field name="model">nahj.tower</field>
+        <field name="arch" type="xml">
+            <search string="Search Towers | بحث الأبراج">
+                <field name="name" string="Tower Name | اسم البرج"/>
+                <field name="city" string="City | المدينة"/>
+                <separator/>
+                <filter string="Active | نشط" name="active" domain="[('active','=',True)]"/>
+                <filter string="Archived | أرشيف" name="archived" domain="[('active','=',False)]"/>
+                <group expand="1" string="Group By | تجميع حسب">
+                    <filter string="City | المدينة" name="group_by_city"
+                            context="{'group_by': 'city'}"/>
+                </group>
+            </search>
+        </field>
+    </record>
+
+    <!-- ═══════════════════════════════════════════════════════
+         Tower – Actions
+    ═══════════════════════════════════════════════════════ -->
+    <record id="action_nahj_tower" model="ir.actions.act_window">
+        <field name="name">Towers</field>
+        <field name="res_model">nahj.tower</field>
+        <field name="view_mode">kanban,list,form</field>
+        <field name="search_view_id" ref="view_nahj_tower_search"/>
+        <field name="help" type="html">
+            <p class="o_view_nocontent_smiling_face">
+                Create your first tower!
+            </p>
+            <p>
+                Add residential towers and manage their units,
+                residents, subscriptions, and expenses.
+            </p>
+        </field>
+    </record>
+
+    <!-- Dashboard action (same as towers kanban) -->
+    <record id="action_nahj_dashboard" model="ir.actions.act_window">
+        <field name="name">Dashboard</field>
+        <field name="res_model">nahj.tower</field>
+        <field name="view_mode">kanban,list,form</field>
+        <field name="search_view_id" ref="view_nahj_tower_search"/>
+        <field name="context">{'search_default_active': 1}</field>
+    </record>
+
+</odoo>

@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+    <!-- Client Action for the OWL Dashboard -->
+    <record id="action_nahj_dashboard_client" model="ir.actions.client">
+        <field name="name">Dashboard | لوحة التحكم</field>
+        <field name="tag">nahj_tower_dashboard</field>
+    </record>
+
+</odoo>

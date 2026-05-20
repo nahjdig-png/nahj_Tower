@@ -1,0 +1,230 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+<!-- ═══════════════════════════════════════════════════════════
+     MONTHLY SUMMARY REPORT – QWeb Template
+═══════════════════════════════════════════════════════════ -->
+<record id="report_monthly_summary_template" model="ir.ui.view">
+  <field name="name">nahj_tower.report_monthly_summary</field>
+  <field name="key">nahj_tower.report_monthly_summary</field>
+  <field name="type">qweb</field>
+  <field name="arch" type="xml">
+  <t t-call="web.html_container">
+    <t t-foreach="docs" t-as="doc">
+      <t t-call="web.external_layout">
+        <div class="page" style="font-family:'Cairo','Segoe UI',sans-serif; direction:rtl; font-size:12px;">
+
+          <!-- ── Header ──────────────────────────────────────────── -->
+          <div style="background:#1a2942;color:#fff;padding:16px 22px;border-radius:8px;margin-bottom:18px;">
+            <div style="display:flex;justify-content:space-between;align-items:center;">
+              <div>
+                <h2 style="margin:0;font-size:18px;"><t t-esc="tower.name"/></h2>
+                <div style="font-size:11px;opacity:0.75;margin-top:3px;">
+                  <t t-if="tower.address"><t t-esc="tower.address"/> – </t>
+                  <t t-esc="tower.city or ''"/>
+                </div>
+              </div>
+              <div style="text-align:center;">
+                <div style="font-size:20px;font-weight:800;">
+                  <t t-esc="month_ar"/> / <t t-esc="month_en"/>
+                </div>
+                <div style="font-size:14px;opacity:0.8;"><t t-esc="year"/></div>
+              </div>
+              <div style="text-align:left;direction:ltr;">
+                <div style="font-size:13px;font-weight:bold;">Monthly Report</div>
+                <div style="font-size:10px;opacity:0.75;">التقرير الشهري</div>
+                <div style="font-size:10px;margin-top:3px;">Printed: <t t-esc="print_date"/></div>
+              </div>
+            </div>
+          </div>
+
+          <!-- ── KPI Summary Boxes ───────────────────────────────── -->
+          <div style="display:flex;gap:12px;margin-bottom:18px;">
+            <div style="flex:1;background:#d5f5e3;border-right:4px solid #27ae60;padding:14px;border-radius:6px;text-align:center;">
+              <div style="font-size:9px;color:#1e8449;font-weight:bold;margin-bottom:4px;">إجمالي الاشتراكات المحصلة</div>
+              <div style="font-size:9px;color:#1e8449;">Total Collected</div>
+              <div style="font-size:20px;font-weight:800;color:#1e8449;direction:ltr;">
+                <t t-esc="'{:,.2f}'.format(total_collected)"/>
+              </div>
+              <div style="font-size:9px;color:#27ae60;margin-top:2px;">
+                نسبة التحصيل: <t t-esc="'{:.1f}'.format(collection_rate)"/>%
+              </div>
+            </div>
+            <div style="flex:1;background:#fde8e8;border-right:4px solid #e74c3c;padding:14px;border-radius:6px;text-align:center;">
+              <div style="font-size:9px;color:#c0392b;font-weight:bold;margin-bottom:4px;">إجمالي المصاريف</div>
+              <div style="font-size:9px;color:#c0392b;">Total Expenses</div>
+              <div style="font-size:20px;font-weight:800;color:#c0392b;direction:ltr;">
+                <t t-esc="'{:,.2f}'.format(total_expenses)"/>
+              </div>
+            </div>
+            <div t-attf-style="flex:1;background:#{balance >= 0 and '#d5f5e3' or '#fde8e8'};border-right:4px solid #{balance >= 0 and '#27ae60' or '#e74c3c'};padding:14px;border-radius:6px;text-align:center;">
+              <div t-attf-style="font-size:9px;color:#{balance >= 0 and '#1e8449' or '#c0392b'};font-weight:bold;margin-bottom:4px;">الرصيد</div>
+              <div t-attf-style="font-size:9px;color:#{balance >= 0 and '#1e8449' or '#c0392b'};">Balance</div>
+              <div t-attf-style="font-size:20px;font-weight:800;direction:ltr;color:#{balance >= 0 and '#1e8449' or '#c0392b'};">
+                <t t-esc="'{:,.2f}'.format(balance)"/>
+              </div>
+            </div>
+            <div style="flex:1;background:#fef9e7;border-right:4px solid #f39c12;padding:14px;border-radius:6px;text-align:center;">
+              <div style="font-size:9px;color:#d68910;font-weight:bold;margin-bottom:4px;">غير مدفوع</div>
+              <div style="font-size:9px;color:#d68910;">Unpaid</div>
+              <div style="font-size:20px;font-weight:800;color:#d68910;direction:ltr;">
+                <t t-esc="len(unpaid_subs)"/>
+              </div>
+              <div style="font-size:9px;color:#d68910;margin-top:2px;">وحدة</div>
+            </div>
+          </div>
+
+          <!-- ── Paid Subscriptions ─────────────────────────────── -->
+          <t t-if="paid_subs">
+            <h4 style="color:#27ae60;border-bottom:2px solid #27ae60;padding-bottom:4px;margin:0 0 8px;">
+              ✓ الاشتراكات المدفوعة – Paid Subscriptions (<t t-esc="len(paid_subs)"/>)
+            </h4>
+            <table style="width:100%;border-collapse:collapse;margin-bottom:16px;font-size:11px;">
+              <thead>
+                <tr style="background:#1a2942;color:#fff;">
+                  <th style="padding:7px 10px;text-align:right;">#</th>
+                  <th style="padding:7px 10px;text-align:right;">الوحدة</th>
+                  <th style="padding:7px 10px;text-align:right;">الطابق</th>
+                  <th style="padding:7px 10px;text-align:right;">الساكن</th>
+                  <th style="padding:7px 10px;text-align:left;direction:ltr;">المبلغ</th>
+                  <th style="padding:7px 10px;text-align:right;">تاريخ الدفع</th>
+                </tr>
+              </thead>
+              <tbody>
+                <t t-foreach="paid_subs" t-as="sub">
+                  <tr t-attf-style="background:#{sub_index % 2 == 0 and '#f8fafc' or '#fff'};">
+                    <td style="padding:6px 10px;border-bottom:1px solid #eef2f7;"><t t-esc="sub_index + 1"/></td>
+                    <td style="padding:6px 10px;border-bottom:1px solid #eef2f7;font-weight:bold;"><t t-esc="sub.unit_id.name"/></td>
+                    <td style="padding:6px 10px;border-bottom:1px solid #eef2f7;text-align:center;"><t t-esc="sub.unit_id.floor"/></td>
+                    <td style="padding:6px 10px;border-bottom:1px solid #eef2f7;"><t t-esc="sub.unit_id.resident_id.name or '—'"/></td>
+                    <td style="padding:6px 10px;border-bottom:1px solid #eef2f7;text-align:left;direction:ltr;font-weight:bold;color:#27ae60;"><t t-esc="'{:,.2f}'.format(sub.amount)"/></td>
+                    <td style="padding:6px 10px;border-bottom:1px solid #eef2f7;"><t t-esc="sub.payment_date or '—'"/></td>
+                  </tr>
+                </t>
+                <tr style="background:#d5f5e3;">
+                  <td colspan="4" style="padding:7px 10px;font-weight:bold;text-align:right;">المجموع / Total</td>
+                  <td style="padding:7px 10px;font-weight:bold;text-align:left;direction:ltr;color:#27ae60;"><t t-esc="'{:,.2f}'.format(total_collected)"/></td>
+                  <td></td>
+                </tr>
+              </tbody>
+            </table>
+          </t>
+
+          <!-- ── Unpaid Subscriptions ───────────────────────────── -->
+          <t t-if="unpaid_subs">
+            <h4 style="color:#e74c3c;border-bottom:2px solid #e74c3c;padding-bottom:4px;margin:0 0 8px;">
+              ✗ الاشتراكات غير المدفوعة – Unpaid Subscriptions (<t t-esc="len(unpaid_subs)"/>)
+            </h4>
+            <table style="width:100%;border-collapse:collapse;margin-bottom:16px;font-size:11px;">
+              <thead>
+                <tr style="background:#c0392b;color:#fff;">
+                  <th style="padding:7px 10px;text-align:right;">#</th>
+                  <th style="padding:7px 10px;text-align:right;">الوحدة</th>
+                  <th style="padding:7px 10px;text-align:right;">الطابق</th>
+                  <th style="padding:7px 10px;text-align:right;">الساكن</th>
+                  <th style="padding:7px 10px;text-align:right;">الهاتف</th>
+                  <th style="padding:7px 10px;text-align:left;direction:ltr;">المبلغ</th>
+                </tr>
+              </thead>
+              <tbody>
+                <t t-foreach="unpaid_subs" t-as="sub">
+                  <tr t-attf-style="background:#{sub_index % 2 == 0 and '#fff5f5' or '#fff'};">
+                    <td style="padding:6px 10px;border-bottom:1px solid #fde8e8;"><t t-esc="sub_index + 1"/></td>
+                    <td style="padding:6px 10px;border-bottom:1px solid #fde8e8;font-weight:bold;"><t t-esc="sub.unit_id.name"/></td>
+                    <td style="padding:6px 10px;border-bottom:1px solid #fde8e8;text-align:center;"><t t-esc="sub.unit_id.floor"/></td>
+                    <td style="padding:6px 10px;border-bottom:1px solid #fde8e8;"><t t-esc="sub.unit_id.resident_id.name or '—'"/></td>
+                    <td style="padding:6px 10px;border-bottom:1px solid #fde8e8;"><t t-esc="sub.unit_id.resident_id.phone or '—'"/></td>
+                    <td style="padding:6px 10px;border-bottom:1px solid #fde8e8;text-align:left;direction:ltr;font-weight:bold;color:#e74c3c;"><t t-esc="'{:,.2f}'.format(sub.amount)"/></td>
+                  </tr>
+                </t>
+              </tbody>
+            </table>
+          </t>
+
+          <!-- ── Expenses ───────────────────────────────────────── -->
+          <t t-if="expenses">
+            <h4 style="color:#e67e22;border-bottom:2px solid #e67e22;padding-bottom:4px;margin:0 0 8px;">
+              • مصاريف الشهر – Monthly Expenses (<t t-esc="len(expenses)"/>)
+            </h4>
+            <table style="width:100%;border-collapse:collapse;margin-bottom:16px;font-size:11px;">
+              <thead>
+                <tr style="background:#e67e22;color:#fff;">
+                  <th style="padding:7px 10px;text-align:right;">التاريخ</th>
+                  <th style="padding:7px 10px;text-align:right;">الوصف</th>
+                  <th style="padding:7px 10px;text-align:right;">التصنيف</th>
+                  <th style="padding:7px 10px;text-align:left;direction:ltr;">المبلغ</th>
+                </tr>
+              </thead>
+              <tbody>
+                <t t-foreach="expenses" t-as="exp">
+                  <tr t-attf-style="background:#{exp_index % 2 == 0 and '#fff8f0' or '#fff'};">
+                    <td style="padding:6px 10px;border-bottom:1px solid #fdebd0;"><t t-esc="exp.date"/></td>
+                    <td style="padding:6px 10px;border-bottom:1px solid #fdebd0;"><t t-esc="exp.name"/></td>
+                    <td style="padding:6px 10px;border-bottom:1px solid #fdebd0;"><t t-esc="exp.category_id.name or '—'"/></td>
+                    <td style="padding:6px 10px;border-bottom:1px solid #fdebd0;text-align:left;direction:ltr;font-weight:bold;color:#e67e22;"><t t-esc="'{:,.2f}'.format(exp.amount)"/></td>
+                  </tr>
+                </t>
+                <tr style="background:#fdebd0;">
+                  <td colspan="3" style="padding:7px 10px;font-weight:bold;">إجمالي المصاريف / Total Expenses</td>
+                  <td style="padding:7px 10px;font-weight:bold;text-align:left;direction:ltr;color:#e67e22;"><t t-esc="'{:,.2f}'.format(total_expenses)"/></td>
+                </tr>
+              </tbody>
+            </table>
+          </t>
+
+          <!-- ── Footer ─────────────────────────────────────────── -->
+          <div style="border-top:2px solid #1a2942;margin-top:20px;padding-top:10px;display:flex;justify-content:space-between;font-size:10px;color:#7f8c8d;">
+            <span>نهج تاور – Nahj Tower Management System</span>
+            <span>تاريخ الطباعة / Print Date: <t t-esc="print_date"/></span>
+          </div>
+
+        </div>
+      </t>
+    </t>
+  </t>
+  </field>
+</record>
+
+<!-- Report Action -->
+<record id="action_report_monthly_summary" model="ir.actions.report">
+  <field name="name">Monthly Summary Report / التقرير الشهري</field>
+  <field name="model">nahj.monthly.report.wizard</field>
+  <field name="report_type">qweb-pdf</field>
+  <field name="report_name">nahj_tower.report_monthly_summary</field>
+  <field name="report_file">nahj_tower.report_monthly_summary</field>
+  <field name="print_report_name">'Monthly-Report-%s-%s-%s' % (object.tower_id.name, object.month, object.year)</field>
+  <field name="paperformat_id" ref="base.paperformat_euro"/>
+</record>
+
+<!-- Wizard Views & Action -->
+<record id="view_nahj_monthly_report_wizard_form" model="ir.ui.view">
+  <field name="name">nahj.monthly.report.wizard.form</field>
+  <field name="model">nahj.monthly.report.wizard</field>
+  <field name="arch" type="xml">
+    <form string="Monthly Summary Report | التقرير الشهري">
+      <group>
+        <group>
+          <field name="tower_id" string="Tower | البرج" options="{'no_quick_create': true}"/>
+          <field name="year" string="Year | السنة"/>
+          <field name="month" string="Month | الشهر"/>
+        </group>
+      </group>
+      <footer>
+        <button name="action_print_pdf" type="object"
+                string="🖨️  Print PDF | طباعة PDF" class="btn-primary"/>
+        <button name="action_view_subscriptions" type="object"
+                string="View Subscriptions | عرض الاشتراكات" class="btn-secondary"/>
+        <button string="Cancel | إلغاء" class="btn-secondary" special="cancel"/>
+      </footer>
+    </form>
+  </field>
+</record>
+
+<record id="action_nahj_monthly_report_wizard" model="ir.actions.act_window">
+  <field name="name">Monthly Report / التقرير الشهري</field>
+  <field name="res_model">nahj.monthly.report.wizard</field>
+  <field name="view_mode">form</field>
+  <field name="target">new</field>
+</record>
+
+</odoo>

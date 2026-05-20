@@ -1,0 +1,345 @@
+# Arabic translation for Nahj Tower
+# Copyright (C) 2024 Nahj Tower
+# This file is distributed under the same license as the nahj_Tower package.
+msgid ""
+msgstr ""
+"Project-Id-Version: Odoo 17.0\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2024-01-01 00:00+0000\n"
+"PO-Revision-Date: 2024-01-01 00:00+0000\n"
+"Last-Translator: \n"
+"Language-Team: Arabic\n"
+"Language: ar\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=6; plural=(n==0 ? 0 : n==1 ? 1 : n==2 ? 2 : n%100>=3 && n%100<=10 ? 3 : n%100>=11 && n%100<=99 ? 4 : 5);\n"
+
+# ── App Name ──────────────────────────────────────────────────────────────────
+msgid "Nahj Tower | نهج تاور"
+msgstr "نهج تاور"
+
+msgid "Nahj Tower – Residential Tower Management System"
+msgstr "نهج تاور – نظام إدارة الأبراج السكنية"
+
+# ── Models ────────────────────────────────────────────────────────────────────
+msgid "Tower"
+msgstr "برج"
+
+msgid "Tower Unit"
+msgstr "وحدة (شقة)"
+
+msgid "Resident"
+msgstr "ساكن"
+
+msgid "Monthly Subscription"
+msgstr "اشتراك شهري"
+
+msgid "Building Expense"
+msgstr "مصروف"
+
+msgid "Expense Category"
+msgstr "تصنيف المصاريف"
+
+msgid "Generate Monthly Subscriptions"
+msgstr "إنشاء اشتراكات شهرية"
+
+# ── Menu ──────────────────────────────────────────────────────────────────────
+msgid "Dashboard"
+msgstr "لوحة التحكم"
+
+msgid "Towers"
+msgstr "الأبراج"
+
+msgid "Units"
+msgstr "الوحدات"
+
+msgid "Residents"
+msgstr "السكان"
+
+msgid "Subscriptions"
+msgstr "الاشتراكات"
+
+msgid "All Subscriptions"
+msgstr "كل الاشتراكات"
+
+msgid "Generate Subscriptions"
+msgstr "إنشاء اشتراكات"
+
+msgid "Expenses"
+msgstr "المصاريف"
+
+msgid "All Expenses"
+msgstr "كل المصاريف"
+
+msgid "Configuration"
+msgstr "الإعدادات"
+
+msgid "Expense Categories"
+msgstr "تصنيفات المصاريف"
+
+# ── Tower Fields ──────────────────────────────────────────────────────────────
+msgid "Tower Name"
+msgstr "اسم البرج"
+
+msgid "Address"
+msgstr "العنوان"
+
+msgid "City"
+msgstr "المدينة"
+
+msgid "Total Units"
+msgstr "إجمالي الوحدات"
+
+msgid "Occupied Units"
+msgstr "وحدات مشغولة"
+
+msgid "Vacant Units"
+msgstr "وحدات فارغة"
+
+msgid "Total Subscriptions Collected"
+msgstr "إجمالي الاشتراكات المحصلة"
+
+msgid "Total Expenses"
+msgstr "إجمالي المصاريف"
+
+msgid "Current Balance"
+msgstr "الرصيد الحالي"
+
+msgid "Overdue Units"
+msgstr "وحدات متأخرة"
+
+# ── Unit Fields ───────────────────────────────────────────────────────────────
+msgid "Unit Number"
+msgstr "رقم الوحدة"
+
+msgid "Floor"
+msgstr "الطابق"
+
+msgid "Status"
+msgstr "الحالة"
+
+msgid "Occupied"
+msgstr "مشغولة"
+
+msgid "Vacant"
+msgstr "فارغة"
+
+msgid "Monthly Subscription"
+msgstr "قيمة الاشتراك الشهري"
+
+msgid "Monthly Amount"
+msgstr "القيمة الشهرية"
+
+# ── Resident Fields ───────────────────────────────────────────────────────────
+msgid "Full Name"
+msgstr "الاسم الكامل"
+
+msgid "Phone Number"
+msgstr "رقم الهاتف"
+
+msgid "Email"
+msgstr "البريد الإلكتروني"
+
+msgid "ID Number"
+msgstr "رقم الهوية"
+
+# ── Subscription Fields ───────────────────────────────────────────────────────
+msgid "Year"
+msgstr "السنة"
+
+msgid "Month"
+msgstr "الشهر"
+
+msgid "Amount"
+msgstr "المبلغ"
+
+msgid "Payment Date"
+msgstr "تاريخ الدفع"
+
+msgid "Unpaid"
+msgstr "غير مدفوع"
+
+msgid "Paid"
+msgstr "مدفوع"
+
+msgid "Paid Months"
+msgstr "أشهر مدفوعة"
+
+msgid "Unpaid Months"
+msgstr "أشهر غير مدفوعة"
+
+# ── Expense Fields ────────────────────────────────────────────────────────────
+msgid "Description"
+msgstr "الوصف"
+
+msgid "Category"
+msgstr "التصنيف"
+
+msgid "Date"
+msgstr "التاريخ"
+
+# ── Month Names ───────────────────────────────────────────────────────────────
+msgid "January"
+msgstr "يناير"
+
+msgid "February"
+msgstr "فبراير"
+
+msgid "March"
+msgstr "مارس"
+
+msgid "April"
+msgstr "أبريل"
+
+msgid "May"
+msgstr "مايو"
+
+msgid "June"
+msgstr "يونيو"
+
+msgid "July"
+msgstr "يوليو"
+
+msgid "August"
+msgstr "أغسطس"
+
+msgid "September"
+msgstr "سبتمبر"
+
+msgid "October"
+msgstr "أكتوبر"
+
+msgid "November"
+msgstr "نوفمبر"
+
+msgid "December"
+msgstr "ديسمبر"
+
+# ── Wizard Fields ─────────────────────────────────────────────────────────────
+msgid "Occupied Units Only"
+msgstr "الوحدات المشغولة فقط"
+
+msgid "Generate"
+msgstr "إنشاء"
+
+msgid "Cancel"
+msgstr "إلغاء"
+
+# ── Expense Categories ────────────────────────────────────────────────────────
+msgid "Doorman / Security"
+msgstr "بواب / حراسة"
+
+msgid "Electricity"
+msgstr "كهرباء"
+
+msgid "Water"
+msgstr "ماء"
+
+msgid "Cleaning"
+msgstr "نظافة"
+
+msgid "Maintenance"
+msgstr "صيانة"
+
+msgid "Elevator"
+msgstr "مصعد"
+
+msgid "Other"
+msgstr "أخرى"
+
+# ── Buttons & Actions ─────────────────────────────────────────────────────────
+msgid "Mark Paid"
+msgstr "تحديد كمدفوع"
+
+msgid "Generate Monthly Subscriptions"
+msgstr "إنشاء الاشتراكات الشهرية"
+
+# ── Validation Messages ───────────────────────────────────────────────────────
+msgid "Resident \"%s\" is already assigned to another unit!"
+msgstr "الساكن \"%s\" مرتبط بوحدة أخرى بالفعل!"
+
+msgid "A subscription record already exists for unit \"%s\" in %s %s."
+msgstr "يوجد سجل اشتراك مسبق للوحدة \"%s\" في %s %s."
+
+msgid "Year must be between 2000 and 2100."
+msgstr "يجب أن تكون السنة بين 2000 و 2100."
+
+msgid "This tower has no units."
+msgstr "لا توجد وحدات في هذا البرج."
+
+msgid "No occupied units found in this tower. Disable \"Occupied Units Only\" to generate for all units."
+msgstr "لا توجد وحدات مشغولة في هذا البرج. قم بإلغاء تفعيل \"الوحدات المشغولة فقط\" لإنشاء اشتراكات لجميع الوحدات."
+
+msgid "Done! Created: %(created)d subscription(s). Skipped (already exist): %(skipped)d."
+msgstr "تم! تم إنشاء: %(created)d اشتراك. تم تجاوز (موجودة مسبقاً): %(skipped)d."
+
+msgid "Subscriptions Generated"
+msgstr "تم إنشاء الاشتراكات"
+
+msgid "A unit with this number already exists on this floor in the same tower."
+msgstr "توجد وحدة بهذا الرقم في نفس الطابق والبرج."
+
+# ── Misc ──────────────────────────────────────────────────────────────────────
+msgid "Notes"
+msgstr "ملاحظات"
+
+msgid "Basic Information"
+msgstr "المعلومات الأساسية"
+
+msgid "Financial Summary"
+msgstr "الملخص المالي"
+
+msgid "Unit Statistics"
+msgstr "إحصائيات الوحدات"
+
+msgid "Unit Info"
+msgstr "معلومات الوحدة"
+
+msgid "Subscription"
+msgstr "الاشتراك"
+
+msgid "Subscription Details"
+msgstr "تفاصيل الاشتراك"
+
+msgid "Payment"
+msgstr "الدفع"
+
+msgid "Contact Info"
+msgstr "معلومات التواصل"
+
+msgid "Assigned Units"
+msgstr "الوحدات المرتبطة"
+
+msgid "Expense Details"
+msgstr "تفاصيل المصروف"
+
+msgid "Create your first tower!"
+msgstr "أنشئ برجك الأول!"
+
+msgid "Add residential towers and manage their units, residents, subscriptions, and expenses."
+msgstr "أضف الأبراج السكنية وأدِر وحداتها وسكانها واشتراكاتها ومصاريفها."
+
+msgid "Add your first unit!"
+msgstr "أضف وحدتك الأولى!"
+
+msgid "Create unit records for each apartment in your tower."
+msgstr "أنشئ سجلات للوحدات في كل برج."
+
+msgid "Add your first resident!"
+msgstr "أضف ساكنك الأول!"
+
+msgid "Register residents and link them to their units."
+msgstr "سجّل السكان وربطهم بوحداتهم."
+
+msgid "No subscriptions found!"
+msgstr "لا توجد اشتراكات!"
+
+msgid "Use \"Generate Monthly Subscriptions\" from the Tower form to create subscription records for all units at once."
+msgstr "استخدم \"إنشاء الاشتراكات الشهرية\" من نموذج البرج لإنشاء سجلات اشتراك لجميع الوحدات دفعةً واحدة."
+
+msgid "No expenses recorded yet!"
+msgstr "لم يتم تسجيل أي مصاريف بعد!"
+
+msgid "Record building expenses such as cleaning, electricity, maintenance, etc."
+msgstr "سجّل مصاريف المبنى كالنظافة والكهرباء والصيانة وغيرها."

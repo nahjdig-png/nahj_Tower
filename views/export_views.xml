@@ -1,0 +1,60 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+    <!-- ═══════════════════════════════════════════════════════
+         Export Subscriptions Wizard – Form View
+    ═══════════════════════════════════════════════════════ -->
+    <record id="view_nahj_export_subscriptions_form" model="ir.ui.view">
+        <field name="name">nahj.export.subscriptions.wizard.form</field>
+        <field name="model">nahj.export.subscriptions.wizard</field>
+        <field name="arch" type="xml">
+            <form string="Export Subscriptions | تصدير الاشتراكات">
+                <sheet>
+                    <!-- Filter section -->
+                    <group string="Filters | الفلاتر" invisible="result_state == 'done'">
+                        <group>
+                            <field name="tower_id" string="Tower | البرج"
+                                   options="{'no_quick_create': true, 'no_create': true}"/>
+                            <field name="year" string="Year | السنة"/>
+                        </group>
+                        <group>
+                            <field name="month" string="Month | الشهر"/>
+                            <field name="state" string="Payment Status | حالة الدفع"/>
+                        </group>
+                    </group>
+
+                    <!-- Download section (after export) -->
+                    <group string="Download | تحميل" invisible="result_state != 'done'">
+                        <div class="alert alert-success" role="alert">
+                            ✅ File ready | الملف جاهز – click the link below to download | اضغط أدناه للتحميل.
+                        </div>
+                        <field name="export_file" widget="binary"
+                               filename="export_filename"
+                               string="Download File | تحميل الملف"/>
+                        <field name="export_filename" invisible="1"/>
+                    </group>
+
+                    <field name="result_state" invisible="1"/>
+                </sheet>
+                <footer>
+                    <button name="action_export" type="object"
+                            string="Export to Excel | تصدير إكسيل" class="btn-primary"
+                            invisible="result_state == 'done'"/>
+                    <button string="Close | إغلاق" class="btn-secondary" special="cancel"/>
+                </footer>
+            </form>
+        </field>
+    </record>
+
+    <!-- ═══════════════════════════════════════════════════════
+         Export Subscriptions – Action
+    ═══════════════════════════════════════════════════════ -->
+    <record id="action_nahj_export_subscriptions" model="ir.actions.act_window">
+        <field name="name">Export Subscriptions</field>
+        <field name="res_model">nahj.export.subscriptions.wizard</field>
+        <field name="view_mode">form</field>
+        <field name="target">new</field>
+        <field name="view_id" ref="view_nahj_export_subscriptions_form"/>
+    </record>
+
+</odoo>

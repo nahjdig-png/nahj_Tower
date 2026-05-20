@@ -1,0 +1,126 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+    <!-- ═══════════════════════════════════════════════════════
+         Resident – List View
+    ═══════════════════════════════════════════════════════ -->
+    <record id="view_nahj_resident_list" model="ir.ui.view">
+        <field name="name">nahj.resident.list</field>
+        <field name="model">nahj.resident</field>
+        <field name="arch" type="xml">
+            <tree string="Residents | السكان">
+                <field name="name" string="Full Name | الاسم الكامل"/>
+                <field name="phone" string="Phone | الهاتف"/>
+                <field name="email" string="Email | البريد" optional="hide"/>
+                <field name="id_number" string="ID Number | رقم الهوية" optional="hide"/>
+                <field name="unit_count" string="Units | الوحدات"/>
+            </tree>
+        </field>
+    </record>
+
+    <!-- ═══════════════════════════════════════════════════════
+         Resident – Form View
+    ═══════════════════════════════════════════════════════ -->
+    <record id="view_nahj_resident_form" model="ir.ui.view">
+        <field name="name">nahj.resident.form</field>
+        <field name="model">nahj.resident</field>
+        <field name="arch" type="xml">
+            <form string="Resident | ساكن">
+                <sheet>
+                    <!-- Smart Button -->
+                    <div class="oe_button_box" name="button_box">
+                        <button name="action_view_units" type="object"
+                                class="oe_stat_button" icon="fa-home">
+                            <div class="o_stat_info">
+                                <span class="o_stat_value">
+                                    <field name="unit_count"/>
+                                </span>
+                                <span class="o_stat_text">Units | الوحدات</span>
+                            </div>
+                        </button>
+                    </div>
+
+                    <div class="oe_title">
+                        <label for="name" string="Full Name | الاسم الكامل"/>
+                        <h1>
+                            <field name="name" placeholder="Full Name | الاسم الكامل…"/>
+                        </h1>
+                    </div>
+
+                    <group>
+                        <group string="Contact Info | بيانات التواصل">
+                            <field name="phone" string="Phone | الهاتف" placeholder="+966…"/>
+                            <field name="email" string="Email | البريد" placeholder="email@example.com"/>
+                            <field name="id_number" string="ID Number | رقم الهوية" placeholder="National ID…"/>
+                        </group>
+                    </group>
+
+                    <notebook>
+                        <page string="Assigned Units | الوحدات المخصصة" name="units_tab">
+                            <field name="unit_ids" readonly="1">
+                                <tree string="Units | الوحدات">
+                                    <field name="tower_id" string="Tower | البرج"/>
+                                    <field name="floor" string="Floor | الطابق"/>
+                                    <field name="name" string="Unit No. | رقم الوحدة"/>
+                                    <field name="state" widget="badge"
+                                           decoration-success="state == 'occupied'"
+                                           decoration-muted="state == 'vacant'"/>
+                                    <field name="monthly_subscription" string="Subscription | الاشتراك"/>
+                                </tree>
+                            </field>
+                        </page>
+                        <page string="Notes | الملاحظات" name="notes_tab">
+                            <field name="notes" placeholder="Add notes… | أضف ملاحظات…"/>
+                        </page>
+                        <page string="Audit Trail | سجل التدقيق" name="audit_tab">
+                            <group col="4">
+                                <field name="create_uid" string="Created by | أنشأ بواسطة" readonly="1"/>
+                                <field name="create_date" string="Created on | تاريخ الإنشاء" readonly="1"/>
+                                <field name="write_uid" string="Last modified by | آخر تعديل بواسطة" readonly="1"/>
+                                <field name="write_date" string="Last modified on | تاريخ آخر تعديل" readonly="1"/>
+                            </group>
+                        </page>
+                    </notebook>
+                </sheet>
+                <chatter/>
+            </form>
+        </field>
+    </record>
+
+    <!-- ═══════════════════════════════════════════════════════
+         Resident – Search View
+    ═══════════════════════════════════════════════════════ -->
+    <record id="view_nahj_resident_search" model="ir.ui.view">
+        <field name="name">nahj.resident.search</field>
+        <field name="model">nahj.resident</field>
+        <field name="arch" type="xml">
+            <search string="Search Residents | بحث السكان">
+                <field name="name" string="Name | الاسم"/>
+                <field name="phone" string="Phone | الهاتف"/>
+                <field name="email" string="Email | البريد"/>
+                <separator/>
+                <filter string="Active | نشط" name="active"
+                        domain="[('active','=',True)]"/>
+                <filter string="Archived | أرشيف" name="archived"
+                        domain="[('active','=',False)]"/>
+            </search>
+        </field>
+    </record>
+
+    <!-- ═══════════════════════════════════════════════════════
+         Resident – Action
+    ═══════════════════════════════════════════════════════ -->
+    <record id="action_nahj_resident" model="ir.actions.act_window">
+        <field name="name">Residents</field>
+        <field name="res_model">nahj.resident</field>
+        <field name="view_mode">list,form</field>
+        <field name="search_view_id" ref="view_nahj_resident_search"/>
+        <field name="help" type="html">
+            <p class="o_view_nocontent_smiling_face">
+                Add your first resident!
+            </p>
+            <p>Register residents and link them to their units.</p>
+        </field>
+    </record>
+
+</odoo>
