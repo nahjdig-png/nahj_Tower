@@ -1,0 +1,160 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+    <!-- ═══════════════════════════════════════════════════════
+         Top-Level App Menu
+    ═══════════════════════════════════════════════════════ -->
+    <menuitem
+        id="menu_nahj_root"
+        name="Nahj Tower"
+        sequence="80"
+        groups="nahj_Tower.group_nahj_user"
+        web_icon="nahj_Tower,static/description/icon.png"/>
+
+    <!-- ── Main Sections ────────────────────────────────────── -->
+    <menuitem
+        id="menu_nahj_dashboard"
+        name="Dashboard | لوحة التحكم"
+        parent="menu_nahj_root"
+        action="nahj_Tower.action_nahj_dashboard_client"
+        sequence="1"/>
+
+    <menuitem
+        id="menu_nahj_towers"
+        name="Towers | الأبراج"
+        parent="menu_nahj_root"
+        sequence="10"/>
+
+    <menuitem
+        id="menu_nahj_subscriptions_main"
+        name="Subscriptions | الاشتراكات"
+        parent="menu_nahj_root"
+        sequence="20"/>
+
+    <menuitem
+        id="menu_nahj_expenses_main"
+        name="Expenses | المصاريف"
+        parent="menu_nahj_root"
+        sequence="30"/>
+
+    <menuitem
+        id="menu_nahj_config"
+        name="Configuration | الإعدادات"
+        parent="menu_nahj_root"
+        sequence="90"/>
+
+    <!-- ── Towers Sub-Menu ───────────────────────────────────── -->
+    <menuitem
+        id="menu_nahj_tower_list"
+        name="Towers | الأبراج"
+        parent="menu_nahj_towers"
+        action="action_nahj_tower"
+        sequence="1"/>
+
+    <menuitem
+        id="menu_nahj_unit"
+        name="Units | الوحدات"
+        parent="menu_nahj_towers"
+        action="action_nahj_unit"
+        sequence="2"/>
+
+    <menuitem
+        id="menu_nahj_resident"
+        name="Residents | السكان"
+        parent="menu_nahj_towers"
+        action="action_nahj_resident"
+        sequence="3"/>
+
+    <!-- ── Subscriptions Sub-Menu ───────────────────────────── -->
+    <menuitem
+        id="menu_nahj_subscription"
+        name="All Subscriptions | كل الاشتراكات"
+        parent="menu_nahj_subscriptions_main"
+        action="action_nahj_subscription"
+        sequence="1"/>
+
+    <menuitem
+        id="menu_nahj_generate_subscriptions"
+        name="Generate Subscriptions | توليد اشتراكات"
+        parent="menu_nahj_subscriptions_main"
+        action="action_generate_subscriptions_wizard"
+        groups="nahj_Tower.group_nahj_manager"
+        sequence="2"/>
+
+    <menuitem
+        id="menu_nahj_monthly_report"
+        name="Monthly Report | تقرير شهري"
+        parent="menu_nahj_subscriptions_main"
+        action="nahj_Tower.action_nahj_monthly_report_wizard"
+        sequence="3"/>
+
+    <menuitem
+        id="menu_nahj_export_subscriptions"
+        name="Export to Excel | تصدير إكسيل"
+        parent="menu_nahj_subscriptions_main"
+        action="nahj_Tower.action_nahj_export_subscriptions"
+        sequence="4"/>
+
+    <menuitem
+        id="menu_nahj_import_units"
+        name="Import Units | استيراد وحدات"
+        parent="menu_nahj_towers"
+        action="nahj_Tower.action_nahj_import_wizard"
+        groups="nahj_Tower.group_nahj_manager"
+        sequence="10"/>
+
+    <menuitem
+        id="menu_nahj_unit_transfer"
+        name="Transfer Resident | نقل ساكن"
+        parent="menu_nahj_towers"
+        action="nahj_Tower.action_nahj_unit_transfer"
+        groups="nahj_Tower.group_nahj_manager"
+        sequence="11"/>
+
+    <!-- ── Expenses Sub-Menu ─────────────────────────────────── -->
+    <menuitem
+        id="menu_nahj_expense"
+        name="All Expenses | كل المصاريف"
+        parent="menu_nahj_expenses_main"
+        action="action_nahj_expense"
+        sequence="1"/>
+
+    <menuitem
+        id="menu_nahj_expense_distribution"
+        name="Emergency Distributions | التوزيعات الطارئة"
+        parent="menu_nahj_expenses_main"
+        action="nahj_Tower.action_nahj_expense_distribution"
+        sequence="2"/>
+
+    <menuitem
+        id="menu_nahj_distribute_expense_wizard"
+        name="Distribute Expense | توزيع مصروف طارئ"
+        parent="menu_nahj_expenses_main"
+        action="nahj_Tower.action_nahj_distribute_expense_wizard"
+        groups="nahj_Tower.group_nahj_manager"
+        sequence="3"/>
+
+    <menuitem
+        id="menu_nahj_tower_assets"
+        name="Tower Assets | أصول الأبراج"
+        parent="menu_nahj_towers"
+        action="nahj_Tower.action_nahj_tower_asset"
+        sequence="12"/>
+
+    <menuitem
+        id="menu_nahj_maintenance_logs"
+        name="Maintenance Logs | سجلات الصيانة"
+        parent="menu_nahj_towers"
+        action="nahj_Tower.action_nahj_maintenance_log"
+        sequence="13"/>
+
+    <!-- ── Configuration Sub-Menu ───────────────────────────── -->
+    <menuitem
+        id="menu_nahj_expense_category"
+        name="Expense Categories | فئات المصاريف"
+        parent="menu_nahj_config"
+        action="action_nahj_expense_category"
+        groups="nahj_Tower.group_nahj_manager"
+        sequence="1"/>
+
+</odoo>

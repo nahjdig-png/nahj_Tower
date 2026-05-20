@@ -1,0 +1,216 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+    <!-- ═══════════════════════════════════════════════════════
+         Subscription – List View
+    ═══════════════════════════════════════════════════════ -->
+    <record id="view_nahj_subscription_list" model="ir.ui.view">
+        <field name="name">nahj.subscription.list</field>
+        <field name="model">nahj.subscription</field>
+        <field name="arch" type="xml">
+            <tree string="Subscriptions"
+                  decoration-success="state == 'paid'"
+                  decoration-warning="state == 'unpaid' and not is_overdue"
+                  decoration-danger="is_overdue">
+                <!-- ── Always visible ── -->
+                <field name="unit_id"/>
+                <field name="resident_id" string="Resident | الساكن"
+                       options="{'no_open': True}"/>
+                <field name="resident_phone" string="Phone | الهاتف"/>
+                <field name="month"/>
+                <!-- ── Optional (hidden by default) ── -->
+                <field name="tower_id" optional="hide"/>
+                <field name="year" optional="hide"/>
+                <field name="amount" optional="hide"/>
+                <field name="discount_amount" optional="hide"
+                       string="Discount | الخصم"
+                       decoration-info="discount_amount > 0"/>
+                <field name="amount_after_discount" optional="hide"
+                       string="Net Amount | المبلغ الصافي"
+                       decoration-info="discount_amount > 0"/>
+                <field name="late_fee_amount" optional="hide"
+                       string="Late Fee"
+                       decoration-danger="late_fee_amount > 0"/>
+                <field name="state" widget="badge" optional="hide"
+                       decoration-success="state == 'paid'"
+                       decoration-warning="state == 'unpaid' and not is_overdue"
+                       decoration-danger="is_overdue"/>
+                <field name="is_overdue" invisible="1"/>
+                <field name="payment_date" optional="hide"/>
+                <field name="receipt_number" optional="hide"
+                       string="Receipt No. | رقم الإيصال"/>
+                <field name="payment_method" optional="hide"/>
+                <field name="notes" optional="hide"/>
+                <!-- ── Payment buttons – always visible ── -->
+                <button name="action_mark_paid" type="object"
+                        string="Mark Paid" class="btn-sm btn-success"
+                        invisible="state == 'paid'"/>
+                <button name="%(nahj_Tower.action_report_subscription_receipt)d"
+                        type="action"
+                        string="🖨 Receipt" class="btn-sm btn-info"
+                        invisible="state != 'paid'"/>
+            </tree>
+        </field>
+    </record>
+
+    <!-- ═══════════════════════════════════════════════════════
+         Subscription – Form View
+    ═══════════════════════════════════════════════════════ -->
+    <record id="view_nahj_subscription_form" model="ir.ui.view">
+        <field name="name">nahj.subscription.form</field>
+        <field name="model">nahj.subscription</field>
+        <field name="arch" type="xml">
+            <form string="Subscription | اشتراك">
+                <header>
+                    <button name="action_mark_paid" type="object"
+                            string="✓ Mark as Paid | تسجيل كمدفوع" class="btn-primary"
+                            invisible="state == 'paid'"/>
+                    <button name="action_mark_unpaid" type="object"
+                            string="Reset to Unpaid | إعادة لغير مدفوع" class="btn-secondary"
+                            groups="nahj_Tower.group_nahj_manager"
+                            invisible="state == 'unpaid'"/>
+                    <button name="action_send_receipt_email" type="object"
+                            string="📧 Email Receipt | إرسال إيصال" class="btn-secondary"
+                            invisible="state != 'paid'"/>
+                    <field name="state" widget="statusbar"
+                           statusbar_visible="unpaid,paid"/>
+                </header>
+                <sheet>
+                    <div class="oe_title">
+                        <label for="unit_id" string="Unit | الوحدة"/>
+                        <h1>
+                            <field name="unit_id" placeholder="Select Unit | اختر وحدة…"
+                                   options="{'no_quick_create': true, 'no_create': true}"/>
+                        </h1>
+                    </div>
+
+                    <group>
+                        <group string="Subscription Details | تفاصيل الاشتراك">
+                            <field name="tower_id" string="Tower | البرج" readonly="1"/>
+                            <field name="year" string="Year | السنة"/>
+                            <field name="month" string="Month | الشهر"/>
+                            <field name="amount" string="Amount | المبلغ"/>
+                            <field name="discount_type" string="Discount Type | نوع الخصم" readonly="1"
+                                   invisible="discount_type == 'none'"/>
+                            <field name="discount_amount" string="Discount | مبلغ الخصم" readonly="1"
+                                   invisible="discount_type == 'none'"/>
+                            <field name="amount_after_discount" string="Net Payable | الصافي المدفوع" readonly="1"
+                                   invisible="discount_type == 'none'"/>
+                        </group>
+                        <group string="Payment | بيانات الدفع">
+                            <field name="payment_method" string="Method | طريقة الدفع"
+                                   invisible="state == 'unpaid'"/>
+                            <field name="payment_date" string="Payment Date | تاريخ الدفع"
+                                   invisible="state == 'unpaid'"
+                                   required="state == 'paid'"/>
+                            <field name="receipt_number"
+                                   string="Receipt No. | رقم الإيصال"
+                                   readonly="1"
+                                   invisible="state == 'unpaid'"/>
+                        </group>
+                    </group>
+                    <group string="Late Fee | غرامة التأخير" invisible="not is_overdue">
+                        <field name="is_overdue" string="Overdue | متأخر" readonly="1"
+                               widget="boolean_toggle"/>
+                        <field name="late_fee_amount" string="Late Fee Amount | مبلغ الغرامة" readonly="1"/>
+                    </group>
+
+                    <group string="Notes | الملاحظات">
+                        <field name="notes" placeholder="Add notes… | أضف ملاحظات…" nolabel="1"/>
+                    </group>
+                    <group string="Audit Trail | سجل التدقيق" col="4">
+                        <field name="create_uid" string="Created by | أنشأ بواسطة" readonly="1"/>
+                        <field name="create_date" string="Created on | تاريخ الإنشاء" readonly="1"/>
+                        <field name="write_uid" string="Last modified by | آخر تعديل بواسطة" readonly="1"/>
+                        <field name="write_date" string="Last modified on | تاريخ آخر تعديل" readonly="1"/>
+                    </group>
+                </sheet>
+                <chatter/>
+            </form>
+        </field>
+    </record>
+
+    <!-- ═══════════════════════════════════════════════════════
+         Subscription – Search View
+    ═══════════════════════════════════════════════════════ -->
+    <record id="view_nahj_subscription_search" model="ir.ui.view">
+        <field name="name">nahj.subscription.search</field>
+        <field name="model">nahj.subscription</field>
+        <field name="arch" type="xml">
+            <search string="Search Subscriptions | بحث الاشتراكات">
+                <field name="unit_id" string="Unit | الوحدة"/>
+                <field name="tower_id" string="Tower | البرج"/>
+                <field name="resident_id" string="Resident | الساكن"/>
+                <field name="resident_phone" string="Phone | الهاتف"/>
+                <separator/>
+                <filter string="Paid | مدفوع" name="paid"
+                        domain="[('state','=','paid')]"/>
+                <filter string="Unpaid | غير مدفوع" name="unpaid"
+                        domain="[('state','=','unpaid')]"/>
+                <filter string="Overdue | متأخر" name="overdue"
+                        domain="[('is_overdue','=',True)]"/>
+                <separator/>
+                <filter string="This Year | هذه السنة" name="this_year"
+                        domain="[('year','=', context_today().year)]"/>
+                <filter string="This Month | هذا الشهر" name="this_month"
+                        domain="[('year','=', context_today().year),
+                                 ('month','=', str(context_today().month))]"/>
+                <group expand="1" string="Group By | تجميع حسب">
+                    <filter string="Tower | البرج" name="group_by_tower"
+                            context="{'group_by': 'tower_id'}"/>
+                    <filter string="Unit | الوحدة" name="group_by_unit"
+                            context="{'group_by': 'unit_id'}"/>
+                    <filter string="Month | الشهر" name="group_by_month"
+                            context="{'group_by': 'month'}"/>
+                    <filter string="Year | السنة" name="group_by_year"
+                            context="{'group_by': 'year'}"/>
+                    <filter string="Status | الحالة" name="group_by_state"
+                            context="{'group_by': 'state'}"/>
+                    <filter string="Payment Method | طريقة الدفع" name="group_by_payment_method"
+                            context="{'group_by': 'payment_method'}"/>
+                </group>
+            </search>
+        </field>
+    </record>
+
+    <!-- ═══════════════════════════════════════════════════════         Subscription – Server Actions (Bulk)
+    ═════════════════════════════════════════════════════ -->
+    <record id="action_bulk_mark_paid" model="ir.actions.server">
+        <field name="name">Mark Selected as Paid | تسجيل المحدد كمدفوع</field>
+        <field name="model_id" ref="model_nahj_subscription"/>
+        <field name="binding_model_id" ref="model_nahj_subscription"/>
+        <field name="binding_view_types">list</field>
+        <field name="state">code</field>
+        <field name="code">records.action_mark_paid()</field>
+    </record>
+
+    <record id="action_bulk_mark_unpaid" model="ir.actions.server">
+        <field name="name">Mark Selected as Unpaid | تسجيل المحدد كغير مدفوع</field>
+        <field name="model_id" ref="model_nahj_subscription"/>
+        <field name="binding_model_id" ref="model_nahj_subscription"/>
+        <field name="binding_view_types">list</field>
+        <field name="groups_id" eval="[(4, ref('nahj_Tower.group_nahj_manager'))]"/>
+        <field name="state">code</field>
+        <field name="code">records.action_mark_unpaid()</field>
+    </record>
+
+    <!-- ═══════════════════════════════════════════════════════         Subscription – Action
+    ═══════════════════════════════════════════════════════ -->
+    <record id="action_nahj_subscription" model="ir.actions.act_window">
+        <field name="name">Subscriptions</field>
+        <field name="res_model">nahj.subscription</field>
+        <field name="view_mode">list,form</field>
+        <field name="search_view_id" ref="view_nahj_subscription_search"/>
+        <field name="context">{'search_default_unpaid': 1}</field>
+        <field name="help" type="html">
+            <p class="o_view_nocontent_smiling_face">
+                No subscriptions found!
+            </p>
+            <p>
+                Use "Generate Monthly Subscriptions" from the Tower form
+                to create subscription records for all units at once.
+            </p>
+        </field>
+    </record>
+
+</odoo>

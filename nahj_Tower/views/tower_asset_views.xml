@@ -1,0 +1,306 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+    <!-- ═══════════════════════════════════════════════════════
+         Tower Asset – List View
+    ═══════════════════════════════════════════════════════ -->
+    <record id="view_nahj_tower_asset_list" model="ir.ui.view">
+        <field name="name">nahj.tower.asset.list</field>
+        <field name="model">nahj.tower.asset</field>
+        <field name="arch" type="xml">
+            <tree string="Tower Assets | أصول البرج"
+                  decoration-success="state == 'working'"
+                  decoration-warning="state == 'needs_maintenance'"
+                  decoration-danger="state == 'broken'"
+                  decoration-muted="state == 'decommissioned'">
+                <field name="tower_id" string="Tower | البرج" optional="show"/>
+                <field name="name" string="Asset Name | اسم الأصل"/>
+                <field name="asset_type" string="Type | النوع"/>
+                <field name="location" string="Location | الموقع" optional="show"/>
+                <field name="state" widget="badge"
+                       decoration-success="state == 'working'"
+                       decoration-warning="state == 'needs_maintenance'"
+                       decoration-danger="state == 'broken'"
+                       decoration-muted="state == 'decommissioned'"/>
+                <field name="last_maintenance_date"
+                       string="Last Maintenance | آخر صيانة" optional="show"/>
+                <field name="next_maintenance_date"
+                       string="Next Maintenance | الصيانة القادمة" optional="show"/>
+                <field name="total_maintenance_cost"
+                       string="Total Cost | إجمالي التكاليف" optional="show"/>
+                <button name="action_record_maintenance" type="object"
+                        string="+ Expense | + مصروف" class="btn-sm btn-primary"
+                        invisible="state == 'decommissioned'"/>
+            </tree>
+        </field>
+    </record>
+
+    <!-- ═══════════════════════════════════════════════════════
+         Tower Asset – Form View
+    ═══════════════════════════════════════════════════════ -->
+    <record id="view_nahj_tower_asset_form" model="ir.ui.view">
+        <field name="name">nahj.tower.asset.form</field>
+        <field name="model">nahj.tower.asset</field>
+        <field name="arch" type="xml">
+            <form string="Tower Asset | أصل البرج">
+                <header>
+                    <button name="action_record_maintenance" type="object"
+                            string="+ Record Maintenance | + تسجيل صيانة"
+                            class="btn-primary"
+                            invisible="state == 'decommissioned'"/>
+                    <button name="action_mark_working" type="object"
+                            string="✓ Mark Working | تشغيل" class="btn-success"
+                            invisible="state == 'working'"/>
+                    <field name="state" widget="statusbar"
+                           statusbar_visible="working,needs_maintenance,broken,decommissioned"/>
+                </header>
+                <sheet>
+                    <!-- Smart Buttons -->
+                    <div class="oe_button_box" name="button_box">
+                        <button name="action_view_maintenance_logs" type="object"
+                                class="oe_stat_button" icon="fa-history">
+                            <div class="o_stat_info">
+                                <span class="o_stat_value">
+                                    <field name="maintenance_log_count"/>
+                                </span>
+                                <span class="o_stat_text">Maint. Logs | سجلات</span>
+                            </div>
+                        </button>
+                        <button name="action_view_expenses" type="object"
+                                class="oe_stat_button" icon="fa-wrench">
+                            <div class="o_stat_info">
+                                <span class="o_stat_value">
+                                    <field name="expense_count"/>
+                                </span>
+                                <span class="o_stat_text">Expenses | مصاريف</span>
+                            </div>
+                        </button>
+                        <button name="action_view_expenses" type="object"
+                                class="oe_stat_button" icon="fa-money">
+                            <div class="o_stat_info">
+                                <span class="o_stat_value">
+                                    <field name="total_maintenance_cost"/>
+                                </span>
+                                <span class="o_stat_text">Total Cost | إجمالي</span>
+                            </div>
+                        </button>
+                    </div>
+
+                    <!-- Title -->
+                    <div class="oe_title">
+                        <label for="name" string="Asset Name | اسم الأصل"/>
+                        <h1>
+                            <field name="name"
+                                   placeholder="e.g. Main Elevator | مثال: الأسانسير الرئيسي"/>
+                        </h1>
+                    </div>
+
+                    <group>
+                        <group string="Asset Info | بيانات الأصل">
+                            <field name="tower_id" string="Tower | البرج"
+                                   options="{'no_quick_create': true, 'no_create': true}"/>
+                            <field name="asset_type" string="Type | النوع"/>
+                            <field name="location" string="Location | الموقع"/>
+                            <field name="serial_number"
+                                   string="Serial / Model | الرقم التسلسلي / الموديل"/>
+                            <field name="supplier"
+                                   string="Supplier / Brand | المورد / الماركة"/>
+                        </group>
+                        <group string="Purchase | الشراء">
+                            <field name="purchase_date"
+                                   string="Purchase Date | تاريخ الشراء"/>
+                            <field name="purchase_cost"
+                                   string="Purchase Cost | تكلفة الشراء"/>
+                            <field name="total_maintenance_cost"
+                                   string="Total Maintenance | إجمالي الصيانة"
+                                   readonly="1"/>
+                        </group>
+                    </group>
+
+                    <group string="Maintenance Schedule | جدول الصيانة">
+                        <group>
+                            <field name="last_maintenance_date"
+                                   string="Last Maintenance | آخر صيانة"/>
+                            <field name="next_maintenance_date"
+                                   string="Next Maintenance | الصيانة القادمة"/>
+                        </group>
+                        <group>
+                            <field name="maintenance_cycle_days"
+                                   string="Cycle (days) | دورة الصيانة (أيام)"/>
+                        </group>
+                    </group>
+
+                    <group string="Notes | ملاحظات">
+                        <field name="notes"
+                               placeholder="Any notes about this asset… | ملاحظات حول هذا الأصل…"
+                               nolabel="1"/>
+                    </group>
+
+                    <notebook>
+                        <page string="Maintenance Expenses | مصاريف الصيانة"
+                              name="expenses_tab">
+                            <field name="expense_ids"
+                                   context="{'default_asset_id': id, 'default_tower_id': tower_id}">
+                                <tree string="Maintenance Expenses | مصاريف الصيانة"
+                                      decoration-muted="amount == 0">
+                                    <field name="date" string="Date | التاريخ"/>
+                                    <field name="name" string="Description | الوصف"/>
+                                    <field name="category_id" string="Category | الفئة"
+                                           options="{'no_quick_create': true, 'no_create': true}"/>
+                                    <field name="amount" string="Amount | المبلغ"/>
+                                    <field name="state" widget="badge"
+                                           decoration-success="state == 'confirmed'"
+                                           decoration-warning="state == 'draft'"/>
+                                </tree>
+                            </field>
+                        </page>
+                        <page string="Maintenance Logs | سجلات الصيانة"
+                              name="logs_tab">
+                            <field name="maintenance_log_ids"
+                                   context="{'default_asset_id': id}">
+                                <tree decoration-success="state_after == 'working'"
+                                      decoration-warning="state_after == 'needs_maintenance'"
+                                      decoration-danger="state_after == 'broken'">
+                                    <field name="date" string="Date | التاريخ"/>
+                                    <field name="log_type" string="Type | النوع" widget="badge"/>
+                                    <field name="technician" string="Technician | الفني"/>
+                                    <field name="state_before" string="Before | قبل"/>
+                                    <field name="state_after" string="After | بعد"/>
+                                    <field name="total_cost" string="Cost | التكلفة"/>
+                                </tree>
+                            </field>
+                        </page>
+                        <page string="Audit Trail | سجل التدقيق" name="audit_tab">
+                            <group col="4">
+                                <field name="create_uid" string="Created by | أنشأ بواسطة" readonly="1"/>
+                                <field name="create_date" string="Created on | تاريخ الإنشاء" readonly="1"/>
+                                <field name="write_uid" string="Last modified by | آخر تعديل بواسطة" readonly="1"/>
+                                <field name="write_date" string="Last modified on | تاريخ آخر تعديل" readonly="1"/>
+                            </group>
+                        </page>
+                    </notebook>
+                </sheet>
+                <chatter/>
+            </form>
+        </field>
+    </record>
+
+    <!-- ═══════════════════════════════════════════════════════
+         Tower Asset – Kanban View
+    ═══════════════════════════════════════════════════════ -->
+    <record id="view_nahj_tower_asset_kanban" model="ir.ui.view">
+        <field name="name">nahj.tower.asset.kanban</field>
+        <field name="model">nahj.tower.asset</field>
+        <field name="arch" type="xml">
+            <kanban quick_create="false" records_draggable="false">
+                <field name="name"/>
+                <field name="asset_type"/>
+                <field name="state"/>
+                <field name="location"/>
+                <field name="next_maintenance_date"/>
+                <field name="total_maintenance_cost"/>
+                <field name="tower_id"/>
+                <templates>
+                    <t t-name="kanban-box">
+                        <div class="oe_kanban_global_click">
+                            <div class="o_kanban_record_top mb4">
+                                <div class="o_kanban_record_headings">
+                                    <strong class="o_kanban_record_title">
+                                        <field name="name"/>
+                                    </strong>
+                                    <span class="o_kanban_record_subtitle text-muted">
+                                        <i class="fa fa-tag me-1"/><field name="asset_type"/>
+                                    </span>
+                                </div>
+                                <div class="o_kanban_record_top_right">
+                                    <field name="state" widget="badge"
+                                           decoration-success="state == 'working'"
+                                           decoration-warning="state == 'needs_maintenance'"
+                                           decoration-danger="state == 'broken'"
+                                           decoration-muted="state == 'decommissioned'"/>
+                                </div>
+                            </div>
+                            <div class="o_kanban_record_body">
+                                <div>
+                                    <i class="fa fa-building-o me-1"/>
+                                    <field name="tower_id"/>
+                                </div>
+                                <t t-if="record.location.value">
+                                    <div class="text-muted">
+                                        <i class="fa fa-map-marker me-1"/>
+                                        <field name="location"/>
+                                    </div>
+                                </t>
+                                <t t-if="record.next_maintenance_date.value">
+                                    <div class="text-warning">
+                                        <i class="fa fa-calendar me-1"/>
+                                        <field name="next_maintenance_date"/>
+                                    </div>
+                                </t>
+                                <div class="fw-bold mt4">
+                                    <i class="fa fa-money me-1"/>
+                                    <field name="total_maintenance_cost"/>
+                                </div>
+                            </div>
+                        </div>
+                    </t>
+                </templates>
+            </kanban>
+        </field>
+    </record>
+
+    <!-- ═══════════════════════════════════════════════════════
+         Tower Asset – Search View
+    ═══════════════════════════════════════════════════════ -->
+    <record id="view_nahj_tower_asset_search" model="ir.ui.view">
+        <field name="name">nahj.tower.asset.search</field>
+        <field name="model">nahj.tower.asset</field>
+        <field name="arch" type="xml">
+            <search string="Search Assets | بحث الأصول">
+                <field name="name" string="Asset Name | اسم الأصل"/>
+                <field name="tower_id" string="Tower | البرج"/>
+                <field name="asset_type" string="Type | النوع"/>
+                <separator/>
+                <filter string="Working | يعمل" name="working"
+                        domain="[('state','=','working')]"/>
+                <filter string="Needs Maintenance | يحتاج صيانة" name="needs_maintenance"
+                        domain="[('state','=','needs_maintenance')]"/>
+                <filter string="Broken | معطل" name="broken"
+                        domain="[('state','=','broken')]"/>
+                <filter string="Decommissioned | خارج الخدمة" name="decommissioned"
+                        domain="[('state','=','decommissioned')]"/>
+                <separator/>
+                <filter string="Maintenance Due | صيانة مستحقة" name="due"
+                        domain="[('next_maintenance_date','&lt;=', context_today().strftime('%Y-%m-%d'))]"/>
+                <group expand="1" string="Group By | تجميع حسب">
+                    <filter string="Tower | البرج" name="group_by_tower"
+                            context="{'group_by': 'tower_id'}"/>
+                    <filter string="Type | النوع" name="group_by_type"
+                            context="{'group_by': 'asset_type'}"/>
+                    <filter string="State | الحالة" name="group_by_state"
+                            context="{'group_by': 'state'}"/>
+                </group>
+            </search>
+        </field>
+    </record>
+
+    <!-- ═══════════════════════════════════════════════════════
+         Tower Asset – Action
+    ═══════════════════════════════════════════════════════ -->
+    <record id="action_nahj_tower_asset" model="ir.actions.act_window">
+        <field name="name">Tower Assets | أصول الأبراج</field>
+        <field name="res_model">nahj.tower.asset</field>
+        <field name="view_mode">kanban,list,form</field>
+        <field name="search_view_id" ref="view_nahj_tower_asset_search"/>
+        <field name="context">{'search_default_working': 0}</field>
+        <field name="help" type="html">
+            <p class="o_view_nocontent_smiling_face">
+                Add your first tower asset!
+            </p>
+            <p>Track elevators, water pumps, generators, and all building equipment
+               with maintenance history and scheduling.
+            </p>
+        </field>
+    </record>
+
+</odoo>

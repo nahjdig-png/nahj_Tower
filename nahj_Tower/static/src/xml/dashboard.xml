@@ -1,0 +1,401 @@
+<?xml version="1.0" encoding="utf-8"?>
+<templates xml:space="preserve">
+
+<t t-name="nahj_Tower.Dashboard">
+  <div class="nahj_dashboard_root o_action">
+  <div class="nahj_dashboard">
+
+    <!-- ═══════════════════════════════════════════════════════
+         HEADER BAR
+    ═══════════════════════════════════════════════════════ -->
+    <div class="nd_header">
+      <div class="nd_header_left">
+        <span class="nd_logo"><i class="fa fa-building"/></span>
+        <div>
+          <h2>نهج تاور <span class="nd_sub">Nahj Tower</span></h2>
+          <small class="nd_date" t-esc="today"/>
+        </div>
+      </div>
+      <div class="nd_header_right">
+        <label class="nd_filter_label">Tower | البرج:</label>
+        <select class="nd_tower_select" t-on-change="onTowerChange">
+          <option value="">All Towers | كل الأبراج</option>
+          <t t-foreach="state.data.towers_list || []" t-as="tw" t-key="tw.id">
+            <option t-att-value="tw.id"
+                    t-att-selected="state.selectedTower === tw.id"
+                    t-esc="tw.name"/>
+          </t>
+        </select>
+        <button class="nd_refresh_btn" t-on-click="loadData" title="Refresh | تحديث">
+          ↻ تحديث
+        </button>
+      </div>
+    </div>
+
+    <!-- ═══════════════════════════════════════════════════════
+         PERIOD FILTER BAR
+    ═══════════════════════════════════════════════════════ -->
+    <div class="nd_filter_bar">
+      <span class="nd_filter_bar_label">
+        <i class="fa fa-calendar-o"/> PERIOD / الفترة
+      </span>
+      <div class="nd_period_group">
+        <button t-attf-class="nd_period_btn{{ state.selectedPeriod === 'today' ? ' active' : '' }}"
+                data-period="today" t-on-click="onPeriodBtnClick">Today / اليوم</button>
+        <button t-attf-class="nd_period_btn{{ state.selectedPeriod === 'week' ? ' active' : '' }}"
+                data-period="week" t-on-click="onPeriodBtnClick">Week / أسبوع</button>
+        <button t-attf-class="nd_period_btn{{ state.selectedPeriod === 'month' ? ' active' : '' }}"
+                data-period="month" t-on-click="onPeriodBtnClick">Month / شهر</button>
+        <button t-attf-class="nd_period_btn{{ state.selectedPeriod === 'quarter' ? ' active' : '' }}"
+                data-period="quarter" t-on-click="onPeriodBtnClick">Quarter / ربع</button>
+        <button t-attf-class="nd_period_btn{{ state.selectedPeriod === 'year' ? ' active' : '' }}"
+                data-period="year" t-on-click="onPeriodBtnClick">Year / سنة</button>
+        <button t-attf-class="nd_period_btn{{ state.selectedPeriod === 'custom' ? ' active' : '' }}"
+                data-period="custom" t-on-click="onPeriodBtnClick">
+          <i class="fa fa-sliders"/> Custom / مخصص
+        </button>
+      </div>
+      <t t-if="state.selectedPeriod === 'custom'">
+        <div class="nd_custom_range">
+          <label class="nd_filter_bar_label">From | من:</label>
+          <input type="date" class="nd_date_input_bar"
+                 t-att-value="state.dateFrom"
+                 t-on-change="onDateFromChange"/>
+          <span class="nd_filter_bar_sep">–</span>
+          <label class="nd_filter_bar_label">To | إلى:</label>
+          <input type="date" class="nd_date_input_bar"
+                 t-att-value="state.dateTo"
+                 t-on-change="onDateToChange"/>
+        </div>
+      </t>
+    </div>
+
+    <!-- Loading Spinner -->
+    <t t-if="state.loading">
+      <div class="nd_loading">
+        <div class="nd_spinner"/>
+        <p>جاري التحميل… Loading…</p>
+      </div>
+    </t>
+
+    <t t-else="">
+      <!-- ═══════════════════════════════════════════════════════
+           KPI CARDS ROW 1  –  Main Financial KPIs
+      ═══════════════════════════════════════════════════════ -->
+      <div class="nd_kpi_row">
+
+        <!-- Towers -->
+        <div class="nd_kpi_card nd_blue" t-on-click="openTowers">
+          <div class="nd_kpi_icon"><i class="fa fa-building"/></div>
+          <div class="nd_kpi_body">
+            <div class="nd_kpi_value" t-esc="state.data.total_towers || 0"/>
+            <div class="nd_kpi_label">الأبراج<br/>Towers</div>
+          </div>
+        </div>
+
+        <!-- Subscriptions Collected -->
+        <div class="nd_kpi_card nd_green" t-on-click="openPaidSubscriptions">
+          <div class="nd_kpi_icon"><i class="fa fa-credit-card"/></div>
+          <div class="nd_kpi_body">
+            <div class="nd_kpi_value nd_money" t-esc="fmt(state.data.total_subscriptions)"/>
+            <div class="nd_kpi_label">إجمالي المحصّل<br/>Total Collected</div>
+          </div>
+        </div>
+
+        <!-- Total Expenses -->
+        <div class="nd_kpi_card nd_red" t-on-click="openExpenses">
+          <div class="nd_kpi_icon"><i class="fa fa-money"/></div>
+          <div class="nd_kpi_body">
+            <div class="nd_kpi_value nd_money" t-esc="fmt(state.data.total_expenses)"/>
+            <div class="nd_kpi_label">إجمالي المصاريف<br/>Total Expenses</div>
+          </div>
+        </div>
+
+        <!-- Balance -->
+        <div t-attf-class="nd_kpi_card {{ (state.data.balance || 0) >= 0 ? 'nd_teal' : 'nd_orange' }}">
+          <div class="nd_kpi_icon"><i class="fa fa-balance-scale"/></div>
+          <div class="nd_kpi_body">
+            <div class="nd_kpi_value nd_money" t-esc="fmt(state.data.balance)"/>
+            <div class="nd_kpi_label">الرصيد الحالي<br/>Current Balance</div>
+          </div>
+        </div>
+
+        <!-- Collection Rate -->
+        <div class="nd_kpi_card nd_purple">
+          <div class="nd_kpi_icon"><i class="fa fa-percent"/></div>
+          <div class="nd_kpi_body">
+            <div class="nd_kpi_value" t-esc="(state.data.collection_rate || 0) + '%'"/>
+            <div class="nd_kpi_label">نسبة التحصيل<br/>Collection Rate</div>
+          </div>
+        </div>
+
+        <!-- Overdue Units -->
+        <div class="nd_kpi_card nd_orange" t-on-click="openUnpaid">
+          <div class="nd_kpi_icon"><i class="fa fa-exclamation-triangle"/></div>
+          <div class="nd_kpi_body">
+            <div class="nd_kpi_value" t-esc="state.data.overdue_count || 0"/>
+            <div class="nd_kpi_label">وحدات متأخرة<br/>Overdue Units</div>
+          </div>
+        </div>
+
+      </div>
+
+      <!-- ═══════════════════════════════════════════════════════
+           KPI CARDS ROW 2  –  Units & This-Month Stats
+      ═══════════════════════════════════════════════════════ -->
+      <div class="nd_kpi_row nd_kpi_row2">
+
+        <!-- Total Units -->
+        <div class="nd_kpi_card2 nd_purple" t-on-click="openUnits">
+          <span class="nd_kpi2_icon"><i class="fa fa-home"/></span>
+          <div>
+            <div class="nd_kpi2_val" t-esc="state.data.total_units || 0"/>
+            <div class="nd_kpi2_lbl">كل الوحدات / All Units</div>
+          </div>
+          <div class="nd_kpi2_sub">
+            <span class="nd_badge nd_badge_green" t-esc="(state.data.occupied_units || 0) + ' مشغول'"/>
+            <span class="nd_badge nd_badge_muted" t-esc="(state.data.vacant_units || 0) + ' فارغ'"/>
+          </div>
+        </div>
+
+        <!-- This Month Paid -->
+        <div class="nd_kpi_card2 nd_green2" t-on-click="openPaidSubscriptions">
+          <span class="nd_kpi2_icon"><i class="fa fa-check-circle"/></span>
+          <div>
+            <div class="nd_kpi2_val nd_money" t-esc="fmt(state.data.month_paid_amount)"/>
+            <div class="nd_kpi2_lbl"><t t-esc="'مدفوع / Paid – ' + periodLabel"/></div>
+          </div>
+          <div class="nd_kpi2_sub">
+            <span class="nd_badge nd_badge_green" t-esc="(state.data.month_paid_count || 0) + ' اشتراك'"/>
+          </div>
+        </div>
+
+        <!-- This Month Unpaid -->
+        <div class="nd_kpi_card2 nd_red2" t-on-click="openUnpaid">
+          <span class="nd_kpi2_icon"><i class="fa fa-times-circle"/></span>
+          <div>
+            <div class="nd_kpi2_val nd_money" t-esc="fmt(state.data.month_unpaid_amount)"/>
+            <div class="nd_kpi2_lbl"><t t-esc="'غير مدفوع / Unpaid – ' + periodLabel"/></div>
+          </div>
+          <div class="nd_kpi2_sub">
+            <span class="nd_badge nd_badge_red" t-esc="(state.data.month_unpaid_count || 0) + ' اشتراك'"/>
+          </div>
+        </div>
+
+        <!-- This Month Expenses -->
+        <div class="nd_kpi_card2 nd_orange2" t-on-click="openExpenses">
+          <span class="nd_kpi2_icon"><i class="fa fa-list-alt"/></span>
+          <div>
+            <div class="nd_kpi2_val nd_money" t-esc="fmt(state.data.month_expense_amount)"/>
+            <div class="nd_kpi2_lbl"><t t-esc="'مصاريف / Expenses – ' + periodLabel"/></div>
+          </div>
+        </div>
+
+        <!-- Residents -->
+        <div class="nd_kpi_card2 nd_blue2" t-on-click="openResidents">
+          <span class="nd_kpi2_icon"><i class="fa fa-users"/></span>
+          <div>
+            <div class="nd_kpi2_val" t-esc="state.data.occupied_units || 0"/>
+            <div class="nd_kpi2_lbl">السكان النشطون / Active Residents</div>
+          </div>
+        </div>
+
+      </div>
+
+      <!-- ═══════════════════════════════════════════════════════
+           PAYMENT METHODS ROW
+      ═══════════════════════════════════════════════════════ -->
+      <t t-if="(state.data.payment_method_stats || []).length">
+        <div class="nd_section_header">
+          <i class="fa fa-credit-card"/> وسائل الدفع / Payment Methods
+          <span class="nd_section_sub">توزيع الاشتراكات المحصلة حسب وسيلة الدفع</span>
+        </div>
+        <div class="nd_payment_row">
+          <t t-foreach="state.data.payment_method_stats || []"
+             t-as="pm" t-key="pm.code">
+            <div class="nd_payment_card"
+                 t-attf-style="border-top: 4px solid #{pm.color}">
+              <div class="nd_payment_icon"
+                   t-attf-style="color: #{pm.color}">
+                <i t-attf-class="fa {{ pm.code === 'cash' ? 'fa-money' : pm.code === 'transfer' ? 'fa-exchange' : pm.code === 'check' ? 'fa-file-text-o' : 'fa-ellipsis-h' }}"/>
+              </div>
+              <div class="nd_payment_body">
+                <div class="nd_payment_label" t-esc="pm.label"/>
+                <div class="nd_payment_amount nd_money"
+                     t-attf-style="color: #{pm.color}"
+                     t-esc="fmt(pm.amount)"/>
+                <div class="nd_payment_count">
+                  <span class="nd_badge"
+                        t-attf-style="background: #{pm.color}20; color: #{pm.color}"
+                        t-esc="pm.count + ' اشتراك'"/>
+                  <span class="nd_payment_pct"
+                        t-esc="totalPaid() > 0 ? Math.round(pm.amount / totalPaid() * 100) + '%' : '0%'"/>
+                </div>
+              </div>
+              <!-- Mini progress bar -->
+              <div class="nd_payment_bar_bg">
+                <div class="nd_payment_bar_fill"
+                     t-attf-style="width: {{ totalPaid() > 0 ? Math.round(pm.amount / totalPaid() * 100) : 0 }}%; background: #{pm.color}"/>
+              </div>
+            </div>
+          </t>
+        </div>
+      </t>
+
+      <!-- ═══════════════════════════════════════════════════════
+           CHARTS ROW
+      ═══════════════════════════════════════════════════════ -->
+      <div class="nd_charts_row">
+
+        <!-- Daily Cash Flow -->
+        <div class="nd_chart_card nd_chart_wide">
+          <div class="nd_card_header">
+            <span class="nd_card_title"><i class="fa fa-bar-chart"/> التدفق النقدي اليومي – Daily Cash Flow</span>
+            <span class="nd_card_sub">آخر 7 أيام / Last 7 Days</span>
+          </div>
+          <div class="nd_chart_body">
+            <canvas t-ref="cashFlowCanvas" class="nd_canvas_flow"/>
+          </div>
+        </div>
+
+        <!-- Expense Donut -->
+        <div class="nd_chart_card nd_chart_narrow">
+          <div class="nd_card_header">
+            <span class="nd_card_title"><i class="fa fa-pie-chart"/> توزيع المصاريف / Expense Breakdown</span>
+          </div>
+          <div class="nd_donut_wrap">
+            <canvas t-ref="donutCanvas" class="nd_canvas_donut"/>
+            <div class="nd_donut_legend">
+              <t t-foreach="(state.data.expense_chart || []).slice(0,6)"
+                 t-as="cat" t-key="cat.label">
+                <div class="nd_legend_item">
+                  <span class="nd_legend_dot"
+                        t-attf-style="background:#{['#3498db','#e74c3c','#2ecc71','#f39c12','#9b59b6','#1abc9c'][cat_index % 6]}"/>
+                  <span t-esc="cat.label"/>
+                  <span class="nd_legend_val nd_money" t-esc="fmt(cat.value)"/>
+                </div>
+              </t>
+            </div>
+          </div>
+        </div>
+
+      </div>
+
+      <!-- ═══════════════════════════════════════════════════════
+           BOTTOM ROW  –  Tables
+      ═══════════════════════════════════════════════════════ -->
+      <div class="nd_bottom_row">
+
+        <!-- Overdue Subscriptions Table -->
+        <div class="nd_table_card">
+          <div class="nd_card_header">
+            <span class="nd_card_title"><i class="fa fa-exclamation-triangle"/> اشتراكات متأخرة / Overdue Subscriptions</span>
+            <button class="nd_link_btn" t-on-click="openUnpaid">عرض الكل / View All →</button>
+          </div>
+          <table class="nd_table">
+            <thead>
+              <tr>
+                <th>الوحدة / Unit</th>
+                <th>الساكن / Resident</th>
+                <th>الشهر / Month</th>
+                <th>المبلغ / Amount</th>
+              </tr>
+            </thead>
+            <tbody>
+              <t t-if="!(state.data.recent_unpaid || []).length">
+                <tr><td colspan="4" class="nd_empty_row">✅ لا توجد اشتراكات متأخرة / No overdue subscriptions</td></tr>
+              </t>
+              <t t-foreach="state.data.recent_unpaid || []" t-as="row" t-key="row_index">
+                <tr>
+                  <td><span class="nd_unit_badge" t-esc="row.unit"/></td>
+                  <td t-esc="row.resident"/>
+                  <td t-esc="month(row.month) + ' ' + row.year"/>
+                  <td class="nd_amount_cell nd_red_text" t-esc="fmt(row.amount)"/>
+                </tr>
+              </t>
+            </tbody>
+          </table>
+        </div>
+
+        <!-- Recent Expenses Table -->
+        <div class="nd_table_card">
+          <div class="nd_card_header">
+            <span class="nd_card_title"><i class="fa fa-money"/> آخر المصاريف / Recent Expenses</span>
+            <button class="nd_link_btn" t-on-click="openExpenses">عرض الكل / View All →</button>
+          </div>
+          <table class="nd_table">
+            <thead>
+              <tr>
+                <th>الوصف / Description</th>
+                <th>التصنيف / Category</th>
+                <th>التاريخ / Date</th>
+                <th>المبلغ / Amount</th>
+              </tr>
+            </thead>
+            <tbody>
+              <t t-if="!(state.data.recent_expenses || []).length">
+                <tr><td colspan="4" class="nd_empty_row">لا توجد مصاريف مسجلة / No expenses recorded</td></tr>
+              </t>
+              <t t-foreach="state.data.recent_expenses || []" t-as="exp" t-key="exp_index">
+                <tr>
+                  <td t-esc="exp.name"/>
+                  <td><span class="nd_cat_badge" t-esc="exp.category"/></td>
+                  <td t-esc="exp.date"/>
+                  <td class="nd_amount_cell" t-esc="fmt(exp.amount)"/>
+                </tr>
+              </t>
+            </tbody>
+          </table>
+        </div>
+
+      </div>
+
+      <!-- ═══════════════════════════════════════════════════════
+           TOWER STATS TABLE
+      ═══════════════════════════════════════════════════════ -->
+      <t t-if="(state.data.tower_stats || []).length > 0">
+        <div class="nd_tower_table_wrap">
+          <div class="nd_card_header">
+            <span class="nd_card_title"><i class="fa fa-table"/> إحصائيات الأبراج / Tower Statistics</span>
+            <button class="nd_link_btn" t-on-click="openTowers">عرض الأبراج / View Towers →</button>
+          </div>
+          <table class="nd_table nd_tower_table">
+            <thead>
+              <tr>
+                <th>البرج / Tower</th>
+                <th>الوحدات</th>
+                <th>مشغول</th>
+                <th>فارغ</th>
+                <th>اشتراكات محصلة</th>
+                <th>غير محصلة</th>
+                <th>المصاريف</th>
+                <th>الرصيد</th>
+              </tr>
+            </thead>
+            <tbody>
+              <t t-foreach="state.data.tower_stats || []" t-as="tw" t-key="tw.id">
+                <tr>
+                  <td><strong t-esc="tw.name"/></td>
+                  <td class="nd_center" t-esc="tw.unit_count"/>
+                  <td class="nd_center"><span class="nd_badge nd_badge_green" t-esc="tw.occupied"/></td>
+                  <td class="nd_center"><span class="nd_badge nd_badge_muted" t-esc="tw.vacant"/></td>
+                  <td class="nd_amount_cell nd_green_text" t-esc="fmt(tw.paid_amount)"/>
+                  <td class="nd_amount_cell nd_red_text" t-esc="fmt(tw.unpaid_amount)"/>
+                  <td class="nd_amount_cell nd_orange_text" t-esc="fmt(tw.expenses)"/>
+                  <td t-attf-class="nd_amount_cell {{ tw.balance >= 0 ? 'nd_green_text' : 'nd_red_text' }}"
+                      t-esc="fmt(tw.balance)"/>
+                </tr>
+              </t>
+            </tbody>
+          </table>
+        </div>
+      </t>
+
+    </t>
+    <!-- end t-else loading -->
+
+  </div>
+  </div>
+</t>
+
+</templates>

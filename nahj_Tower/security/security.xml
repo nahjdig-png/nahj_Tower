@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data noupdate="0">
+
+        <!-- ── Module Category ────────────────────────────────────────── -->
+        <record id="module_category_nahj_tower" model="ir.module.category">
+            <field name="name">Nahj Tower</field>
+            <field name="sequence">50</field>
+        </record>
+
+        <!-- ── Groups ─────────────────────────────────────────────────── -->
+        <record id="group_nahj_user" model="res.groups">
+            <field name="name">User</field>
+            <field name="category_id" ref="module_category_nahj_tower"/>
+        </record>
+
+        <record id="group_nahj_manager" model="res.groups">
+            <field name="name">Manager</field>
+            <field name="category_id" ref="module_category_nahj_tower"/>
+            <field name="implied_ids" eval="[(4, ref('group_nahj_user'))]"/>
+        </record>
+
+        <!-- ── Admins automatically get Nahj Tower Manager access ─────── -->
+        <record id="base.group_system" model="res.groups">
+            <field name="implied_ids" eval="[(4, ref('nahj_Tower.group_nahj_manager'))]"/>
+        </record>
+
+    </data>
+</odoo>

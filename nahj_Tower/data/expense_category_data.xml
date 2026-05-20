@@ -1,0 +1,45 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data noupdate="0">
+
+        <record id="expense_category_doorman" model="nahj.expense.category">
+            <field name="name">Doorman / Security | حارس / أمن</field>
+        </record>
+
+        <record id="expense_category_electricity" model="nahj.expense.category">
+            <field name="name">Electricity | كهرباء</field>
+        </record>
+
+        <record id="expense_category_water" model="nahj.expense.category">
+            <field name="name">Water | ماء</field>
+        </record>
+
+        <record id="expense_category_cleaning" model="nahj.expense.category">
+            <field name="name">Cleaning | تنظيف</field>
+        </record>
+
+        <record id="expense_category_maintenance" model="nahj.expense.category">
+            <field name="name">Maintenance | صيانة</field>
+        </record>
+
+        <record id="expense_category_elevator" model="nahj.expense.category">
+            <field name="name">Elevator | مصعد</field>
+        </record>
+
+        <record id="expense_category_other" model="nahj.expense.category">
+            <field name="name">Other | أخرى</field>
+        </record>
+
+        <!-- Receipt Number Sequence -->
+        <record id="seq_nahj_subscription_receipt" model="ir.sequence">
+            <field name="name">Nahj Tower: Subscription Receipt</field>
+            <field name="code">nahj.subscription.receipt</field>
+            <field name="prefix">RCP/%(year)s/</field>
+            <field name="padding">5</field>
+            <field name="number_next">1</field>
+            <field name="number_increment">1</field>
+            <field name="use_date_range">False</field>
+        </record>
+
+    </data>
+</odoo>

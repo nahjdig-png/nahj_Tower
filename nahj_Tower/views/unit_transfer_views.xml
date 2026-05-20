@@ -1,0 +1,65 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+    <!-- ═══════════════════════════════════════════════════════
+         Unit Transfer Wizard – Form View
+    ═══════════════════════════════════════════════════════ -->
+    <record id="view_nahj_unit_transfer_form" model="ir.ui.view">
+        <field name="name">nahj.unit.transfer.wizard.form</field>
+        <field name="model">nahj.unit.transfer.wizard</field>
+        <field name="arch" type="xml">
+            <form string="Transfer Resident | نقل ساكن">
+                <sheet>
+                    <div class="alert alert-info" role="alert" style="margin-bottom: 16px;">
+                        <strong>Unit Transfer | نقل وحدة</strong><br/>
+                        Move a resident from their current unit to a vacant unit.
+                        The source unit will be vacated and the target unit will be marked as occupied.<br/>
+                        <em>نقل ساكن من وحدته الحالية إلى وحدة شاغرة. سيتم تفريغ الوحدة المصدر وتسجيل الودة المستهدف كمشغولة.</em>
+                    </div>
+
+                    <group>
+                        <group string="From (Source) | من (المصدر)">
+                            <field name="source_unit_id" string="Source Unit | الوحدة المصدر"
+                                   options="{'no_quick_create': true, 'no_create': true}"/>
+                            <field name="resident_id" string="Resident | الساكن" readonly="1"
+                                   invisible="not resident_id"/>
+                        </group>
+                        <group string="To (Target) | إلى (المستهدف)">
+                            <field name="target_unit_id" string="Target Unit | الوحدة المستهدف"
+                                   options="{'no_quick_create': true, 'no_create': true}"/>
+                            <field name="new_monthly_subscription" string="New Subscription | اشتراك جديد"
+                                   help="Leave 0 to keep the target unit's existing subscription. | اترك 0 للإبقاء على اشتراك الوحدة."/>
+                        </group>
+                    </group>
+
+                    <group>
+                        <group string="Transfer Details | تفاصيل النقل">
+                            <field name="transfer_date" string="Transfer Date | تاريخ النقل"/>
+                        </group>
+                    </group>
+
+                    <group string="Notes | الملاحظات">
+                        <field name="notes" placeholder="Reason for transfer, remarks… | سبب النقل…" nolabel="1"/>
+                    </group>
+                </sheet>
+                <footer>
+                    <button name="action_transfer" type="object"
+                            string="Transfer Now | نقل الآن" class="btn-primary"/>
+                    <button string="Cancel | إلغاء" class="btn-secondary" special="cancel"/>
+                </footer>
+            </form>
+        </field>
+    </record>
+
+    <!-- ═══════════════════════════════════════════════════════
+         Unit Transfer – Action
+    ═══════════════════════════════════════════════════════ -->
+    <record id="action_nahj_unit_transfer" model="ir.actions.act_window">
+        <field name="name">Transfer Resident</field>
+        <field name="res_model">nahj.unit.transfer.wizard</field>
+        <field name="view_mode">form</field>
+        <field name="target">new</field>
+        <field name="view_id" ref="view_nahj_unit_transfer_form"/>
+    </record>
+
+</odoo>

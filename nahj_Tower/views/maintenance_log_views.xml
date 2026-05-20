@@ -1,0 +1,196 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+    <!-- ═══════════════════════════════════════════════════════
+         Maintenance Log – List View
+    ═══════════════════════════════════════════════════════ -->
+    <record id="view_nahj_maintenance_log_list" model="ir.ui.view">
+        <field name="name">nahj.maintenance.log.list</field>
+        <field name="model">nahj.maintenance.log</field>
+        <field name="arch" type="xml">
+            <tree string="Maintenance Logs | سجلات الصيانة"
+                  decoration-success="state_after == 'working'"
+                  decoration-warning="state_after == 'needs_maintenance'"
+                  decoration-danger="state_after == 'broken'">
+                <field name="date" string="Date | التاريخ"/>
+                <field name="tower_id" string="Tower | البرج" optional="show"/>
+                <field name="asset_id" string="Asset | الأصل"/>
+                <field name="log_type" string="Type | النوع" widget="badge"
+                       decoration-info="log_type == 'routine'"
+                       decoration-warning="log_type == 'corrective'"
+                       decoration-danger="log_type == 'emergency'"
+                       decoration-muted="log_type == 'inspection'"/>
+                <field name="technician" string="Technician | الفني" optional="show"/>
+                <field name="state_before" string="Before | قبل" optional="show"/>
+                <field name="state_after" string="After | بعد" widget="badge"
+                       decoration-success="state_after == 'working'"
+                       decoration-warning="state_after == 'needs_maintenance'"
+                       decoration-danger="state_after == 'broken'"/>
+                <field name="total_cost" string="Cost | التكلفة"/>
+                <field name="next_maintenance_date"
+                       string="Next | الصيانة القادمة" optional="show"/>
+            </tree>
+        </field>
+    </record>
+
+    <!-- ═══════════════════════════════════════════════════════
+         Maintenance Log – Form View
+    ═══════════════════════════════════════════════════════ -->
+    <record id="view_nahj_maintenance_log_form" model="ir.ui.view">
+        <field name="name">nahj.maintenance.log.form</field>
+        <field name="model">nahj.maintenance.log</field>
+        <field name="arch" type="xml">
+            <form string="Maintenance Log | سجل صيانة">
+                <header>
+                    <button name="action_confirm" type="object"
+                            string="✓ Confirm &amp; Update Asset | تأكيد وتحديث الأصل"
+                            class="btn-primary"
+                            confirm="This will update the asset state and create an expense if cost &gt; 0. Proceed? | سيتم تحديث حالة الأصل وإنشاء مصروف إذا كانت التكلفة أكبر من صفر. متابعة؟"
+                            invisible="expense_id"/>
+                    <field name="expense_id" invisible="1"/>
+                </header>
+                <sheet>
+                    <!-- Linked expense badge -->
+                    <div class="oe_button_box" name="button_box"
+                         invisible="not expense_id">
+                        <button name="%(nahj_Tower.action_nahj_expense)d"
+                                type="action"
+                                class="oe_stat_button" icon="fa-file-text-o">
+                            <div class="o_stat_info">
+                                <span class="o_stat_text">Expense | مصروف</span>
+                            </div>
+                        </button>
+                    </div>
+
+                    <!-- Title -->
+                    <div class="oe_title">
+                        <label for="asset_id" string="Asset | الأصل"/>
+                        <h1>
+                            <field name="asset_id"
+                                   options="{'no_quick_create': true, 'no_create': true}"/>
+                        </h1>
+                    </div>
+
+                    <group>
+                        <group string="Maintenance Details | تفاصيل الصيانة">
+                            <field name="tower_id" string="Tower | البرج" readonly="1"/>
+                            <field name="date" string="Date | التاريخ"/>
+                            <field name="log_type" string="Type | النوع"/>
+                        </group>
+                        <group string="Technician | الفني">
+                            <field name="technician"
+                                   string="Name | الاسم"
+                                   placeholder="Technician or company name…"/>
+                            <field name="contractor_phone"
+                                   string="Phone | الهاتف"/>
+                            <field name="warranty_expiry"
+                                   string="Warranty Expiry | انتهاء الضمان"/>
+                        </group>
+                    </group>
+
+                    <group string="Work Description | وصف العمل">
+                        <field name="description"
+                               placeholder="Describe the work done… | اوصف العمل المنجز…"
+                               nolabel="1"/>
+                    </group>
+
+                    <group string="Parts &amp; Materials | القطع والمواد">
+                        <field name="parts_replaced"
+                               placeholder="List replaced parts or materials… | اذكر القطع أو المواد المستخدمة…"
+                               nolabel="1"/>
+                    </group>
+
+                    <group>
+                        <group string="State Change | تغيير الحالة">
+                            <field name="state_before" string="State Before | الحالة قبل"/>
+                            <field name="state_after" string="State After | الحالة بعد"/>
+                        </group>
+                        <group string="Cost | التكلفة">
+                            <field name="labor_cost" string="Labor | العمالة"/>
+                            <field name="parts_cost" string="Parts | القطع"/>
+                            <field name="total_cost" string="Total | الإجمالي"
+                                   readonly="1" force_save="1"/>
+                        </group>
+                    </group>
+
+                    <group string="Scheduling | الجدولة">
+                        <group>
+                            <field name="next_maintenance_date"
+                                   string="Next Maintenance | الصيانة القادمة"
+                                   help="Leave empty to auto-calculate from asset cycle. | اتركه فارغاً للحساب التلقائي."/>
+                        </group>
+                    </group>
+
+                    <group string="Notes | ملاحظات" invisible="not notes">
+                        <field name="notes" nolabel="1"/>
+                    </group>
+
+                    <group string="Attachments | المرفقات">
+                        <field name="attachment_ids"
+                               nolabel="1" widget="many2many_binary"/>
+                    </group>
+                    <group string="Audit Trail | سجل التدقيق" col="4">
+                        <field name="create_uid" string="Created by | أنشأ بواسطة" readonly="1"/>
+                        <field name="create_date" string="Created on | تاريخ الإنشاء" readonly="1"/>
+                        <field name="write_uid" string="Last modified by | آخر تعديل بواسطة" readonly="1"/>
+                        <field name="write_date" string="Last modified on | تاريخ آخر تعديل" readonly="1"/>
+                    </group>
+                </sheet>
+                <chatter/>
+            </form>
+        </field>
+    </record>
+
+    <!-- ═══════════════════════════════════════════════════════
+         Maintenance Log – Search View
+    ═══════════════════════════════════════════════════════ -->
+    <record id="view_nahj_maintenance_log_search" model="ir.ui.view">
+        <field name="name">nahj.maintenance.log.search</field>
+        <field name="model">nahj.maintenance.log</field>
+        <field name="arch" type="xml">
+            <search string="Search Maintenance Logs | بحث سجلات الصيانة">
+                <field name="asset_id" string="Asset | الأصل"/>
+                <field name="tower_id" string="Tower | البرج"/>
+                <field name="technician" string="Technician | الفني"/>
+                <separator/>
+                <filter name="routine" string="Routine | روتينية"
+                        domain="[('log_type','=','routine')]"/>
+                <filter name="corrective" string="Repair | إصلاح"
+                        domain="[('log_type','=','corrective')]"/>
+                <filter name="emergency" string="Emergency | طارئة"
+                        domain="[('log_type','=','emergency')]"/>
+                <separator/>
+                <filter name="this_year" string="This Year | هذه السنة"
+                        domain="[('date','&gt;=', context_today().strftime('%Y-01-01')),
+                                 ('date','&lt;=', context_today().strftime('%Y-12-31'))]"/>
+                <group expand="1" string="Group By | تجميع حسب">
+                    <filter name="group_asset" string="Asset | الأصل"
+                            context="{'group_by': 'asset_id'}"/>
+                    <filter name="group_tower" string="Tower | البرج"
+                            context="{'group_by': 'tower_id'}"/>
+                    <filter name="group_type" string="Type | النوع"
+                            context="{'group_by': 'log_type'}"/>
+                    <filter name="group_month" string="Month | الشهر"
+                            context="{'group_by': 'date:month'}"/>
+                </group>
+            </search>
+        </field>
+    </record>
+
+    <!-- ═══════════════════════════════════════════════════════
+         Maintenance Log – Action
+    ═══════════════════════════════════════════════════════ -->
+    <record id="action_nahj_maintenance_log" model="ir.actions.act_window">
+        <field name="name">Maintenance Logs | سجلات الصيانة</field>
+        <field name="res_model">nahj.maintenance.log</field>
+        <field name="view_mode">list,form</field>
+        <field name="search_view_id" ref="view_nahj_maintenance_log_search"/>
+        <field name="help" type="html">
+            <p class="o_view_nocontent_smiling_face">
+                No maintenance logs yet!
+            </p>
+            <p>Open a tower asset and click "+ Record Maintenance" to start logging.</p>
+        </field>
+    </record>
+
+</odoo>

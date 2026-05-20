@@ -1,0 +1,45 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+    <!-- ═══════════════════════════════════════════════════════
+         Generate Subscriptions Wizard – Form View
+    ═══════════════════════════════════════════════════════ -->
+    <record id="view_nahj_generate_subscriptions_form" model="ir.ui.view">
+        <field name="name">nahj.generate.subscriptions.form</field>
+        <field name="model">nahj.generate.subscriptions</field>
+        <field name="arch" type="xml">
+            <form string="Generate Monthly Subscriptions | توليد اشتراكات شهرية">
+                <group>
+                    <group>
+                        <field name="tower_id" string="Tower | البرج"
+                               options="{'no_quick_create': true, 'no_create': true}"/>
+                        <field name="year" string="Year | السنة"/>
+                        <field name="month" string="From Month | من شهر"/>
+                        <field name="month_to" string="To Month | إلى شهر"
+                               help="Leave empty to generate for a single month only. | اترك فارغاً لشهر واحد."/>
+                    </group>
+                    <group>
+                        <field name="only_occupied" string="Occupied Units Only | الوحدات المشغولة فقط"/>
+                    </group>
+                </group>
+                <footer>
+                    <button name="action_generate" type="object"
+                            string="Generate | توليد" class="btn-primary"/>
+                    <button string="Cancel | إلغاء" class="btn-secondary"
+                            special="cancel"/>
+                </footer>
+            </form>
+        </field>
+    </record>
+
+    <!-- ═══════════════════════════════════════════════════════
+         Generate Subscriptions Wizard – Action
+    ═══════════════════════════════════════════════════════ -->
+    <record id="action_generate_subscriptions_wizard" model="ir.actions.act_window">
+        <field name="name">Generate Monthly Subscriptions</field>
+        <field name="res_model">nahj.generate.subscriptions</field>
+        <field name="view_mode">form</field>
+        <field name="target">new</field>
+    </record>
+
+</odoo>

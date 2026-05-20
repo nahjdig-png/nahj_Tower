@@ -1,0 +1,93 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+    <!-- ═══════════════════════════════════════════════════════
+         Email Template – Subscription Payment Receipt
+    ═══════════════════════════════════════════════════════ -->
+    <record id="email_template_subscription_receipt" model="mail.template">
+        <field name="name">Nahj Tower: Payment Receipt</field>
+        <field name="model_id" ref="nahj_Tower.model_nahj_subscription"/>
+        <field name="subject">Payment Receipt – {{ object.display_name }}</field>
+        <field name="email_to">{{ object.unit_id.resident_id.email }}</field>
+        <field name="email_from">{{ (user.email_formatted or '') }}</field>
+        <field name="body_html"><![CDATA[
+<div style="font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto; background: #f9f9f9; border-radius: 8px; overflow: hidden;">
+
+    <!-- Header -->
+    <div style="background: linear-gradient(135deg, #1a3c5e, #2d6a9f); color: white; padding: 28px 32px; text-align: center;">
+        <h1 style="margin: 0; font-size: 22px; letter-spacing: 1px;">
+            🏢 {{ object.tower_id.name }}
+        </h1>
+        <p style="margin: 6px 0 0; font-size: 13px; opacity: 0.85;">Payment Receipt / إيصال دفع</p>
+    </div>
+
+    <!-- Body -->
+    <div style="background: white; padding: 28px 32px;">
+        <p style="margin: 0 0 20px; font-size: 15px; color: #333;">
+            Dear <strong>{{ object.unit_id.resident_id.name }}</strong>,
+        </p>
+        <p style="margin: 0 0 20px; color: #555; font-size: 14px;">
+            We confirm receipt of your monthly subscription payment. Details below:
+        </p>
+
+        <!-- Summary Table -->
+        <table style="width: 100%; border-collapse: collapse; font-size: 14px; margin-bottom: 24px;">
+            <tr style="background: #f0f4f8;">
+                <td style="padding: 10px 14px; font-weight: bold; color: #1a3c5e; width: 40%;">Tower</td>
+                <td style="padding: 10px 14px; color: #333;">{{ object.tower_id.name }}</td>
+            </tr>
+            <tr>
+                <td style="padding: 10px 14px; font-weight: bold; color: #1a3c5e;">Unit</td>
+                <td style="padding: 10px 14px; color: #333;">{{ object.unit_id.display_name }}</td>
+            </tr>
+            <tr style="background: #f0f4f8;">
+                <td style="padding: 10px 14px; font-weight: bold; color: #1a3c5e;">Period</td>
+                <td style="padding: 10px 14px; color: #333;">
+                    {% set months_en = {'1': 'January', '2': 'February', '3': 'March',
+                                        '4': 'April', '5': 'May', '6': 'June',
+                                        '7': 'July', '8': 'August', '9': 'September',
+                                        '10': 'October', '11': 'November', '12': 'December'} %}
+                    {{ months_en.get(object.month, object.month) }} {{ object.year }}
+                </td>
+            </tr>
+            <tr>
+                <td style="padding: 10px 14px; font-weight: bold; color: #1a3c5e;">Payment Date</td>
+                <td style="padding: 10px 14px; color: #333;">{{ object.payment_date }}</td>
+            </tr>
+            <tr style="background: #f0f4f8;">
+                <td style="padding: 10px 14px; font-weight: bold; color: #1a3c5e;">Payment Method</td>
+                <td style="padding: 10px 14px; color: #333;">
+                    {% if object.payment_method == 'cash' %}Cash / نقدي
+                    {% elif object.payment_method == 'transfer' %}Bank Transfer / تحويل بنكي
+                    {% elif object.payment_method == 'check' %}Check / شيك
+                    {% else %}Other / أخرى{% endif %}
+                </td>
+            </tr>
+        </table>
+
+        <!-- Amount Box -->
+        <div style="background: #e8f5e9; border: 2px solid #43a047; border-radius: 8px; text-align: center; padding: 18px;">
+            <p style="margin: 0; color: #2e7d32; font-size: 13px; text-transform: uppercase; letter-spacing: 1px;">Amount Paid / المبلغ المدفوع</p>
+            <p style="margin: 8px 0 0; font-size: 32px; font-weight: bold; color: #1b5e20;">
+                {{ '%.2f' % object.amount }}
+            </p>
+        </div>
+
+        {% if object.notes %}
+        <p style="margin: 20px 0 0; font-size: 13px; color: #777;">
+            <strong>Notes:</strong> {{ object.notes }}
+        </p>
+        {% endif %}
+    </div>
+
+    <!-- Footer -->
+    <div style="background: #f0f4f8; padding: 16px 32px; text-align: center; font-size: 12px; color: #888;">
+        <p style="margin: 0;">This is an automatically generated receipt. Please keep it for your records.</p>
+        <p style="margin: 4px 0 0;">هذا إيصال تم إنشاؤه تلقائيًا. يرجى الاحتفاظ به لسجلاتك.</p>
+    </div>
+</div>
+        ]]></field>
+        <field name="auto_delete" eval="True"/>
+    </record>
+
+</odoo>

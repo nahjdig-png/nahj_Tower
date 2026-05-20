@@ -1,0 +1,439 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+<!-- ═══════════════════════════════════════════════════════════
+     BASE LAYOUT – shared header/footer for portal pages
+═══════════════════════════════════════════════════════════ -->
+<template id="portal_base_layout">
+<![CDATA[<!DOCTYPE html>]]>
+<html dir="rtl" lang="ar">
+<head>
+  <meta charset="utf-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1"/>
+  <title>نهج تاور – بوابة الساكن</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com"/>
+  <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@300;400;600;700;800&amp;display=swap" rel="stylesheet"/>
+  <style>
+    *{box-sizing:border-box;margin:0;padding:0;}
+    body{font-family:'Cairo','Segoe UI',sans-serif;background:#f0f4f8;color:#2c3e50;min-height:100vh;}
+    .nd-header{background:#1a2942;color:#fff;padding:14px 24px;display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:8px;}
+    .nd-header h1{font-size:1.3rem;font-weight:700;}
+    .nd-header small{font-size:0.75rem;opacity:0.7;}
+    .nd-container{max-width:900px;margin:30px auto;padding:0 16px;}
+    .nd-card{background:#fff;border-radius:12px;box-shadow:0 2px 12px rgba(0,0,0,0.08);overflow:hidden;margin-bottom:20px;}
+    .nd-card-header{background:#1a2942;color:#fff;padding:14px 20px;font-size:1rem;font-weight:700;}
+    .nd-card-body{padding:20px;}
+    .nd-kpi-row{display:grid;grid-template-columns:repeat(3,1fr);gap:14px;margin-bottom:20px;}
+    .nd-kpi{border-radius:10px;padding:16px;text-align:center;}
+    .nd-kpi-val{font-size:1.6rem;font-weight:800;direction:ltr;}
+    .nd-kpi-lbl{font-size:0.72rem;margin-top:3px;opacity:0.85;}
+    /* Table wrapper – scroll on small screens */
+    .nd-table-scroll{overflow-x:auto;-webkit-overflow-scrolling:touch;}
+    .nd-table{width:100%;border-collapse:collapse;font-size:0.82rem;min-width:420px;}
+    .nd-table th{padding:9px 12px;text-align:right;background:#f8fafc;color:#7f8c8d;font-weight:600;border-bottom:2px solid #eef2f7;font-size:0.75rem;white-space:nowrap;}
+    .nd-table td{padding:9px 12px;border-bottom:1px solid #f0f4f8;vertical-align:middle;}
+    .nd-table tr:last-child td{border-bottom:none;}
+    .nd-table tr:hover td{background:#f8fafc;}
+    .badge-paid{background:#d5f5e3;color:#1e8449;padding:3px 10px;border-radius:20px;font-size:0.72rem;font-weight:600;white-space:nowrap;}
+    .badge-unpaid{background:#fde8e8;color:#c0392b;padding:3px 10px;border-radius:20px;font-size:0.72rem;font-weight:600;white-space:nowrap;}
+    .amount{direction:ltr;display:inline-block;font-weight:700;}
+    .nd-footer{text-align:center;padding:20px;font-size:0.75rem;color:#95a5a6;}
+    .nd-nav{display:flex;flex-wrap:wrap;gap:8px;margin-bottom:18px;}
+    .nd-nav a.nd-nav-link{color:#1a2942;text-decoration:none;padding:10px 14px;border-radius:10px;background:#fff;border:1px solid #dde3ea;font-size:0.8rem;font-weight:600;transition:background .15s,color .15s;}
+    .nd-nav a.nd-nav-link:hover{background:#e8eef5;}
+    .nd-nav a.nd-nav-link.nd-nav-active{background:#1a2942;color:#fff;border-color:#1a2942;}
+    .nd-note{font-size:0.8rem;color:#5d6d7e;line-height:1.5;margin-bottom:14px;padding:12px 14px;background:#eaf2ff;border-radius:10px;border:1px solid #d4e3f5;}
+    .badge-draft{background:#fef9e7;color:#9a7b0d;padding:3px 10px;border-radius:20px;font-size:0.72rem;font-weight:600;white-space:nowrap;}
+    .badge-conf{background:#d5f5e3;color:#1e8449;padding:3px 10px;border-radius:20px;font-size:0.72rem;font-weight:600;white-space:nowrap;}
+    .text-muted{color:#7f8c8d;font-size:0.78rem;}
+    /* ── Mobile Responsive ── */
+    @media(max-width:600px){
+      .nd-container{margin:16px auto;padding:0 10px;}
+      .nd-kpi-row{grid-template-columns:1fr 1fr;gap:10px;}
+      .nd-kpi{padding:12px 8px;}
+      .nd-kpi-val{font-size:1.3rem;}
+      .nd-kpi-lbl{font-size:0.68rem;}
+      .nd-card-header{padding:11px 14px;font-size:0.9rem;}
+      .nd-card-body{padding:14px;}
+      .nd-table{font-size:0.75rem;min-width:380px;}
+      .nd-table th,.nd-table td{padding:7px 8px;}
+      .nd-header{padding:10px 14px;}
+      .nd-header h1{font-size:1.1rem;}
+    }
+    @media(max-width:400px){
+      .nd-kpi-row{grid-template-columns:1fr;}
+      .nd-header a{font-size:0.75rem;}
+    }
+  </style>
+</head>
+<body>
+  <div class="nd-header">
+    <div>
+      <h1>🏢 نهج تاور – Nahj Tower</h1>
+      <small>بوابة الساكن – Resident Portal</small>
+    </div>
+    <a href="/nahj/portal" style="color:#a8c4e0;font-size:0.8rem;text-decoration:none;">← رجوع</a>
+  </div>
+  <div class="nd-container">
+    <t t-out="0"/>
+  </div>
+  <div class="nd-footer">نهج تاور – Nahj Tower Management System</div>
+</body>
+</html>
+</template>
+
+<!-- ═══════════════════════════════════════════════════════════
+     RESIDENT PORTAL – Quick navigation (token URLs)
+═══════════════════════════════════════════════════════════ -->
+<template id="portal_resident_nav" name="Nahj Portal – Resident nav">
+  <div class="nd-nav">
+    <a t-attf-href="/nahj/portal/resident/#{resident.id}/#{portal_token}"
+       t-att-class="'nd-nav-link' + (' nd-nav-active' if nav_active == 'subs' else '')">📋 الاشتراكات</a>
+    <a t-attf-href="/nahj/portal/resident/#{resident.id}/#{portal_token}/expenses"
+       t-att-class="'nd-nav-link' + (' nd-nav-active' if nav_active == 'exp' else '')">💰 مصاريف مؤكدة</a>
+    <a t-attf-href="/nahj/portal/resident/#{resident.id}/#{portal_token}/charges"
+       t-att-class="'nd-nav-link' + (' nd-nav-active' if nav_active == 'chg' else '')">⚡ حصتي (طوارئ)</a>
+    <a t-attf-href="/nahj/portal/resident/#{resident.id}/#{portal_token}/maintenance"
+       t-att-class="'nd-nav-link' + (' nd-nav-active' if nav_active == 'mnt' else '')">🔧 سجل الصيانة</a>
+    <a t-attf-href="/nahj/portal/resident/#{resident.id}/#{portal_token}/assets"
+       t-att-class="'nd-nav-link' + (' nd-nav-active' if nav_active == 'ast' else '')">🏗️ أصول البرج</a>
+  </div>
+</template>
+
+<!-- ═══════════════════════════════════════════════════════════
+     INDEX PAGE – Phone lookup form
+═══════════════════════════════════════════════════════════ -->
+<template id="portal_index_template" name="Nahj Portal – Lookup">
+<![CDATA[<!DOCTYPE html>]]>
+<html dir="rtl" lang="ar">
+<head>
+  <meta charset="utf-8"/>
+  <meta name="viewport" content="width=device-width,initial-scale=1"/>
+  <title>نهج تاور – بوابة الساكن</title>
+  <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700;800&amp;display=swap" rel="stylesheet"/>
+  <style>
+    *{box-sizing:border-box;margin:0;padding:0;}
+    body{font-family:'Cairo','Segoe UI',sans-serif;background:linear-gradient(135deg,#1a2942 0%,#2c4a6e 100%);min-height:100vh;display:flex;align-items:center;justify-content:center;padding:16px;}
+    .card{background:#fff;border-radius:16px;padding:36px 28px;max-width:440px;width:100%;box-shadow:0 20px 60px rgba(0,0,0,0.3);text-align:center;}
+    .icon{font-size:3rem;margin-bottom:12px;}
+    h2{font-size:1.5rem;font-weight:800;color:#1a2942;margin-bottom:6px;}
+    .sub{color:#7f8c8d;font-size:0.85rem;margin-bottom:28px;line-height:1.5;}
+    label{display:block;text-align:right;font-size:0.85rem;font-weight:600;color:#2c3e50;margin-bottom:6px;}
+    input[type=tel]{width:100%;border:2px solid #dde3ea;border-radius:10px;padding:14px 16px;font-size:1.05rem;font-family:'Cairo',sans-serif;direction:ltr;text-align:center;outline:none;transition:border-color 0.2s;}
+    input[type=tel]:focus{border-color:#1a2942;}
+    button{width:100%;background:#1a2942;color:#fff;border:none;border-radius:10px;padding:14px;font-size:1rem;font-family:'Cairo',sans-serif;font-weight:700;cursor:pointer;margin-top:16px;transition:background 0.2s;touch-action:manipulation;}
+    button:hover{background:#2c4a6e;}
+    button:active{background:#0f1e30;}
+    .error-box{background:#fde8e8;color:#c0392b;border-radius:8px;padding:10px 14px;margin-bottom:18px;font-size:0.83rem;}
+    .footer{margin-top:24px;font-size:0.72rem;color:#95a5a6;}
+    @media(max-width:480px){
+      .card{padding:28px 18px;border-radius:12px;}
+      h2{font-size:1.25rem;}
+      .sub{font-size:0.8rem;margin-bottom:20px;}
+      input[type=tel]{font-size:1rem;padding:12px 14px;}
+    }
+  </style>
+</head>
+<body>
+  <div class="card">
+    <div class="icon">🏢</div>
+    <h2>نهج تاور</h2>
+    <p class="sub">أدخل رقم هاتفك لعرض اشتراكاتك<br/>Enter your phone number to view your subscriptions</p>
+
+    <t t-if="error == 'not_found'">
+      <div class="error-box">❌ لم يتم العثور على رقم الهاتف في النظام.<br/>Phone number not found.</div>
+    </t>
+    <t t-elif="error == 'empty_phone'">
+      <div class="error-box">⚠️ يرجى إدخال رقم الهاتف.<br/>Please enter your phone number.</div>
+    </t>
+    <t t-elif="error == 'invalid_token'">
+      <div class="error-box">🔒 رابط غير صالح.<br/>Invalid link.</div>
+    </t>
+
+    <form action="/nahj/portal/lookup" method="POST">
+      <label>رقم الهاتف / Phone Number</label>
+      <input type="tel" name="phone" placeholder="05XXXXXXXX" autocomplete="tel" autofocus="1"/>
+      <button type="submit">🔍 بحث – Search</button>
+    </form>
+    <div class="footer">Nahj Tower Management System</div>
+  </div>
+</body>
+</html>
+</template>
+
+<!-- ═══════════════════════════════════════════════════════════
+     RESIDENT PAGE – Subscriptions list
+═══════════════════════════════════════════════════════════ -->
+<template id="portal_resident_template" name="Nahj Portal – Resident">
+  <t t-call="nahj_Tower.portal_base_layout">
+    <t t-call="nahj_Tower.portal_resident_nav"/>
+
+    <!-- Welcome -->
+    <div class="nd-card">
+      <div class="nd-card-header">
+        👤 مرحباً، <t t-esc="resident.name"/>
+      </div>
+      <div class="nd-card-body">
+        <t t-foreach="units" t-as="unit">
+          <div style="display:flex;gap:14px;flex-wrap:wrap;margin-bottom:8px;">
+            <span>🏢 <b><t t-esc="unit.tower_id.name"/></b></span>
+            <span>🚪 الوحدة: <b><t t-esc="unit.name"/></b></span>
+            <span>🏗️ الطابق: <b><t t-esc="unit.floor"/></b></span>
+          </div>
+        </t>
+        <t t-if="resident.phone">
+          <div style="color:#7f8c8d;font-size:0.82rem;margin-top:4px;">📞 <t t-esc="resident.phone"/></div>
+        </t>
+      </div>
+    </div>
+
+    <!-- KPIs -->
+    <div class="nd-kpi-row">
+      <div class="nd-kpi" style="background:#d5f5e3;color:#1e8449;">
+        <div class="nd-kpi-val"><t t-esc="'{:,.2f}'.format(paid_total)"/></div>
+        <div class="nd-kpi-lbl">إجمالي المدفوع<br/>Total Paid</div>
+      </div>
+      <div class="nd-kpi" style="background:#fde8e8;color:#c0392b;">
+        <div class="nd-kpi-val"><t t-esc="'{:,.2f}'.format(unpaid_total)"/></div>
+        <div class="nd-kpi-lbl">إجمالي غير المدفوع<br/>Total Unpaid</div>
+      </div>
+      <div class="nd-kpi" style="background:#eaf2ff;color:#2980b9;">
+        <div class="nd-kpi-val"><t t-esc="len(subscriptions)"/></div>
+        <div class="nd-kpi-lbl">إجمالي الاشتراكات<br/>Total Records</div>
+      </div>
+    </div>
+
+    <!-- Subscriptions Table -->
+    <div class="nd-card">
+      <div class="nd-card-header">📋 سجل الاشتراكات – Subscription History</div>
+      <div class="nd-table-scroll">
+        <table class="nd-table">
+          <thead>
+            <tr>
+              <th>الفترة / Period</th>
+              <th>الوحدة / Unit</th>
+              <th>المبلغ / Amount</th>
+              <th>الحالة / Status</th>
+              <th>تاريخ الدفع</th>
+            </tr>
+          </thead>
+          <tbody>
+            <t t-if="not subscriptions">
+              <tr><td colspan="5" style="text-align:center;padding:24px;color:#95a5a6;">لا توجد اشتراكات مسجلة</td></tr>
+            </t>
+            <t t-foreach="subscriptions" t-as="sub">
+              <tr>
+                <td>
+                  <b><t t-esc="months_ar.get(sub.month, sub.month)"/></b>
+                  <span style="color:#7f8c8d;font-size:0.8rem;"> / <t t-esc="months_en.get(sub.month, sub.month)"/></span>
+                  <b> <t t-esc="sub.year"/></b>
+                </td>
+                <td><t t-esc="sub.unit_id.name"/></td>
+                <td><span class="amount"><t t-esc="'{:,.2f}'.format(sub.amount)"/></span></td>
+                <td>
+                  <t t-if="sub.state == 'paid'">
+                    <span class="badge-paid">✅ مدفوع</span>
+                  </t>
+                  <t t-else="">
+                    <span class="badge-unpaid">❌ غير مدفوع</span>
+                  </t>
+                </td>
+                <td style="color:#7f8c8d;font-size:0.8rem;">
+                  <t t-esc="sub.payment_date or '—'"/>
+                </td>
+              </tr>
+            </t>
+          </tbody>
+        </table>
+      </div>
+    </div>
+
+  </t>
+</template>
+
+<!-- ═══════════════════════════════════════════════════════════
+     RESIDENT – Confirmed building expenses (towers of resident units)
+═══════════════════════════════════════════════════════════ -->
+<template id="portal_resident_expenses_template" name="Nahj Portal – Resident expenses">
+  <t t-call="nahj_Tower.portal_base_layout">
+    <t t-call="nahj_Tower.portal_resident_nav"/>
+    <p class="nd-note">المصاريف المعروضة <b>مؤكدة فقط</b> ولأبراج وحداتك المسجّلة — للاطلاع فقط.</p>
+    <div class="nd-kpi-row" style="margin-bottom:16px;">
+      <div class="nd-kpi" style="background:#eaf2ff;color:#1a2942;">
+        <div class="nd-kpi-val"><t t-esc="'{:,.2f}'.format(expenses_total)"/></div>
+        <div class="nd-kpi-lbl">إجمالي المعروض<br/>Displayed total</div>
+      </div>
+      <div class="nd-kpi" style="background:#f8fafc;color:#5d6d7e;">
+        <div class="nd-kpi-val"><t t-esc="len(expenses)"/></div>
+        <div class="nd-kpi-lbl">عدد السجلات (حد أقصى 200)<br/>Records</div>
+      </div>
+    </div>
+    <div class="nd-card">
+      <div class="nd-card-header">💰 مصاريف العمارة — Confirmed expenses</div>
+      <div class="nd-table-scroll">
+        <table class="nd-table">
+          <thead>
+            <tr>
+              <th>التاريخ</th>
+              <th>البرج</th>
+              <th>الوصف</th>
+              <th>التصنيف</th>
+              <th>المبلغ</th>
+            </tr>
+          </thead>
+          <tbody>
+            <t t-if="not expenses">
+              <tr><td colspan="5" style="text-align:center;padding:24px;color:#95a5a6;">لا توجد مصاريف مؤكدة</td></tr>
+            </t>
+            <t t-foreach="expenses" t-as="e">
+              <tr>
+                <td><t t-esc="e.date or '—'"/></td>
+                <td><t t-esc="e.tower_id.name"/></td>
+                <td><t t-esc="e.name"/></td>
+                <td class="text-muted"><t t-esc="e.category_id.name or '—'"/></td>
+                <td><span class="amount"><t t-esc="'{:,.2f}'.format(e.amount)"/></span></td>
+              </tr>
+            </t>
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </t>
+</template>
+
+<!-- ═══════════════════════════════════════════════════════════
+     RESIDENT – Maintenance logs (towers of resident units)
+═══════════════════════════════════════════════════════════ -->
+<template id="portal_resident_maintenance_template" name="Nahj Portal – Resident maintenance">
+  <t t-call="nahj_Tower.portal_base_layout">
+    <t t-call="nahj_Tower.portal_resident_nav"/>
+    <p class="nd-note">سجلات الصيانة لأصول <b>الأبراج</b> التي تضم وحداتك — للاطلاع فقط.</p>
+    <div class="nd-card">
+      <div class="nd-card-header">🔧 سجل الصيانة — Maintenance log</div>
+      <div class="nd-table-scroll">
+        <table class="nd-table">
+          <thead>
+            <tr>
+              <th>التاريخ</th>
+              <th>البرج</th>
+              <th>الأصل</th>
+              <th>النوع</th>
+              <th>التكلفة</th>
+              <th>وصف مختصر</th>
+            </tr>
+          </thead>
+          <tbody>
+            <t t-if="not logs">
+              <tr><td colspan="6" style="text-align:center;padding:24px;color:#95a5a6;">لا توجد سجلات</td></tr>
+            </t>
+            <t t-foreach="logs" t-as="log">
+              <tr>
+                <td><t t-esc="log.date or '—'"/></td>
+                <td><t t-esc="log.tower_id.name"/></td>
+                <td><t t-esc="log.asset_id.name"/></td>
+                <td class="text-muted"><t t-esc="log_type_labels.get(log.log_type, log.log_type)"/></td>
+                <td><span class="amount"><t t-esc="'{:,.2f}'.format(log.total_cost)"/></span></td>
+                <td style="max-width:200px;" t-att-title="log.description or ''">
+                  <t t-esc="(log.description or '')[:90]"/><t t-if="log.description and len(log.description) > 90">…</t>
+                </td>
+              </tr>
+            </t>
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </t>
+</template>
+
+<!-- ═══════════════════════════════════════════════════════════
+     RESIDENT – Tower assets
+═══════════════════════════════════════════════════════════ -->
+<template id="portal_resident_assets_template" name="Nahj Portal – Resident assets">
+  <t t-call="nahj_Tower.portal_base_layout">
+    <t t-call="nahj_Tower.portal_resident_nav"/>
+    <p class="nd-note">أصول الصيانة المسجّلة لأبراج وحداتك — الحالة للاطلاع فقط.</p>
+    <div class="nd-card">
+      <div class="nd-card-header">🏗️ أصول البرج — Tower assets</div>
+      <div class="nd-table-scroll">
+        <table class="nd-table">
+          <thead>
+            <tr>
+              <th>البرج</th>
+              <th>الاسم</th>
+              <th>النوع</th>
+              <th>الحالة</th>
+              <th>الموقع</th>
+              <th>الصيانة القادمة</th>
+            </tr>
+          </thead>
+          <tbody>
+            <t t-if="not assets">
+              <tr><td colspan="6" style="text-align:center;padding:24px;color:#95a5a6;">لا توجد أصول مسجّلة</td></tr>
+            </t>
+            <t t-foreach="assets" t-as="a">
+              <tr>
+                <td><t t-esc="a.tower_id.name"/></td>
+                <td><t t-esc="a.name"/></td>
+                <td class="text-muted"><t t-esc="asset_type_labels.get(a.asset_type, a.asset_type)"/></td>
+                <td><t t-esc="asset_state_labels.get(a.state, a.state)"/></td>
+                <td class="text-muted"><t t-esc="a.location or '—'"/></td>
+                <td><t t-esc="a.next_maintenance_date or '—'"/></td>
+              </tr>
+            </t>
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </t>
+</template>
+
+<!-- ═══════════════════════════════════════════════════════════
+     RESIDENT – Unit charges (emergency distributions share)
+═══════════════════════════════════════════════════════════ -->
+<template id="portal_resident_charges_template" name="Nahj Portal – Resident charges">
+  <t t-call="nahj_Tower.portal_base_layout">
+    <t t-call="nahj_Tower.portal_resident_nav"/>
+    <p class="nd-note">حصص وحدتك من <b>توزيعات المصاريف الطارئة</b> — للاطلاع فقط.</p>
+    <div class="nd-card">
+      <div class="nd-card-header">⚡ حصتي من التوزيعات — My unit charges</div>
+      <div class="nd-table-scroll">
+        <table class="nd-table">
+          <thead>
+            <tr>
+              <th>التاريخ</th>
+              <th>البرج</th>
+              <th>التوزيع</th>
+              <th>الوحدة</th>
+              <th>المبلغ</th>
+              <th>الحالة</th>
+            </tr>
+          </thead>
+          <tbody>
+            <t t-if="not charges">
+              <tr><td colspan="6" style="text-align:center;padding:24px;color:#95a5a6;">لا توجد رسوم مسجّلة</td></tr>
+            </t>
+            <t t-foreach="charges" t-as="c">
+              <tr>
+                <td><t t-esc="c.distribution_id.date or '—'"/></td>
+                <td><t t-esc="c.tower_id.name"/></td>
+                <td><t t-esc="c.distribution_id.name"/></td>
+                <td><t t-esc="c.unit_id.name"/></td>
+                <td><span class="amount"><t t-esc="'{:,.2f}'.format(c.amount)"/></span></td>
+                <td>
+                  <t t-if="c.state == 'paid'">
+                    <span class="badge-paid">مدفوع</span>
+                  </t>
+                  <t t-else="">
+                    <span class="badge-unpaid">غير مدفوع</span>
+                  </t>
+                </td>
+              </tr>
+            </t>
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </t>
+</template>
+
+</odoo>

@@ -1,0 +1,220 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+    <!-- ═══════════════════════════════════════════════════════
+         Unit – List View
+    ═══════════════════════════════════════════════════════ -->
+    <record id="view_nahj_unit_list" model="ir.ui.view">
+        <field name="name">nahj.unit.list</field>
+        <field name="model">nahj.unit</field>
+        <field name="arch" type="xml">
+            <tree string="Units | الوحدات"
+                  decoration-muted="state == 'vacant'"
+                  decoration-success="state == 'occupied'">
+                <field name="tower_id" string="Tower | البرج" optional="show"/>
+                <field name="floor" string="Floor | الطابق"/>
+                <field name="name" string="Unit No. | رقم الوحدة"/>
+                <field name="state" widget="badge"
+                       decoration-success="state == 'occupied'"
+                       decoration-muted="state == 'vacant'"/>
+                <field name="resident_id" string="Resident | الساكن"/>
+                <field name="monthly_subscription" string="Subscription | الاشتراك"/>
+                <field name="subscription_state" widget="badge" optional="show"
+                       decoration-success="subscription_state == 'active'"
+                       decoration-danger="subscription_state == 'inactive'"/>
+                <field name="paid_count" string="Paid | مدفوع" optional="show"/>
+                <field name="unpaid_count" string="Unpaid | غير مدفوع" optional="show"/>
+                <field name="lease_end" string="Lease End | انتهاء العقد" optional="show"/>
+                <field name="lease_status" widget="badge" optional="show"
+                       decoration-success="lease_status == 'active'"
+                       decoration-warning="lease_status == 'expiring'"
+                       decoration-danger="lease_status == 'expired'"
+                       decoration-muted="lease_status == 'none'"/>
+            </tree>
+        </field>
+    </record>
+
+    <!-- ═══════════════════════════════════════════════════════
+         Unit – Form View
+    ═══════════════════════════════════════════════════════ -->
+    <record id="view_nahj_unit_form" model="ir.ui.view">
+        <field name="name">nahj.unit.form</field>
+        <field name="model">nahj.unit</field>
+        <field name="arch" type="xml">
+            <form string="Unit | الوحدة">
+                <sheet>
+                    <!-- Smart Button -->
+                    <div class="oe_button_box" name="button_box">
+                        <button name="action_view_subscriptions" type="object"
+                                class="oe_stat_button" icon="fa-credit-card">
+                            <div class="o_stat_info">
+                                <span class="o_stat_value">
+                                    <field name="subscription_count"/>
+                                </span>
+                                <span class="o_stat_text">Subscriptions | اشتراكات</span>
+                            </div>
+                        </button>
+                        <button name="action_view_subscriptions" type="object"
+                                class="oe_stat_button" icon="fa-exclamation-circle">
+                            <div class="o_stat_info">
+                                <span class="o_stat_value" style="color: #e74c3c;">
+                                    <field name="unpaid_count"/>
+                                </span>
+                                <span class="o_stat_text">Unpaid | غير مدفوع</span>
+                            </div>
+                        </button>
+                    </div>
+
+                    <!-- Title -->
+                    <div class="oe_title">
+                        <label class="o_form_label" for="name">Unit Number | رقم الوحدة</label>
+                        <h1>
+                            <field name="name" placeholder="e.g. 101"/>
+                        </h1>
+                    </div>
+
+                    <group>
+                        <group string="Unit Info | بيانات الوحدة">
+                            <field name="tower_id" string="Tower | البرج"
+                                   options="{'no_quick_create': true, 'no_create': true}"/>
+                            <field name="floor" string="Floor | الطابق"/>
+                            <field name="state" string="Status | الحالة" widget="radio"
+                                   options="{'horizontal': true}"/>
+                        </group>
+                        <group string="Subscription | الاشتراك">
+                            <field name="subscription_state"
+                                   string="Subscription State | حالة الاشتراك"
+                                   widget="badge"
+                                   decoration-success="subscription_state == 'active'"
+                                   decoration-danger="subscription_state == 'inactive'"/>
+                            <field name="monthly_subscription"
+                                   string="Monthly Amount | المبلغ الشهري"/>
+                            <field name="discount_type"
+                                   string="Discount Type | نوع الخصم"/>
+                            <field name="discount_value"
+                                   string="Discount Value | قيمة الخصم"
+                                   invisible="discount_type == 'none'"/>
+                            <field name="net_subscription"
+                                   string="Net Monthly Amount | المبلغ الصافي"
+                                   readonly="1"
+                                   invisible="discount_type == 'none'"/>
+                            <field name="paid_count" string="Paid Months | الأشهر المدفوعة"/>
+                            <field name="unpaid_count" string="Unpaid Months | الأشهر غير المدفوعة"/>
+                        </group>
+                    </group>
+
+                    <!-- Resident Box -->
+                    <group string="Resident | الساكن">
+                        <field name="resident_id" string="Resident | الساكن"
+                               context="{'form_view_ref': 'nahj_Tower.view_nahj_resident_form'}"
+                               options="{'no_quick_create': true, 'no_create': true}"/>
+                    </group>
+
+                    <!-- Lease Box -->
+                    <group string="Lease / Contract | عقد الإيجار">
+                        <group>
+                            <field name="lease_start" string="Lease Start | بداية العقد"/>
+                            <field name="lease_end" string="Lease End | انتهاء العقد"/>
+                        </group>
+                        <group>
+                            <field name="lease_status" string="Lease Status | حالة العقد" widget="badge"
+                                   decoration-success="lease_status == 'active'"
+                                   decoration-warning="lease_status == 'expiring'"
+                                   decoration-danger="lease_status == 'expired'"
+                                   decoration-muted="lease_status == 'none'"
+                                   readonly="1"/>
+                        </group>
+                        <field name="lease_notes" placeholder="Lease terms, remarks… | شروط العقد…" colspan="2" nolabel="1"/>
+                    </group>
+
+                    <notebook>
+                        <page string="Subscriptions | الاشتراكات" name="subscriptions_tab">
+                            <field name="subscription_ids"
+                                   context="{'default_unit_id': id, 'default_tower_id': tower_id}">
+                                <tree string="Subscriptions | الاشتراكات" editable="bottom"
+                                      decoration-success="state == 'paid'"
+                                      decoration-warning="state == 'unpaid'">
+                                    <field name="year" string="Year | السنة"/>
+                                    <field name="month" string="Month | الشهر"/>
+                                    <field name="amount" string="Amount | المبلغ"/>
+                                    <field name="state" widget="badge"
+                                           decoration-success="state == 'paid'"
+                                           decoration-warning="state == 'unpaid'"/>
+                                    <field name="payment_date" string="Payment Date | تاريخ الدفع" optional="show"/>
+                                </tree>
+                            </field>
+                        </page>
+                        <page string="Notes | الملاحظات" name="notes_tab">
+                            <field name="notes" placeholder="Add notes… | أضف ملاحظات…"/>
+                        </page>
+                        <page string="Audit Trail | سجل التدقيق" name="audit_tab">
+                            <group col="4">
+                                <field name="create_uid" string="Created by | أنشأ بواسطة" readonly="1"/>
+                                <field name="create_date" string="Created on | تاريخ الإنشاء" readonly="1"/>
+                                <field name="write_uid" string="Last modified by | آخر تعديل بواسطة" readonly="1"/>
+                                <field name="write_date" string="Last modified on | تاريخ آخر تعديل" readonly="1"/>
+                            </group>
+                        </page>
+                    </notebook>
+                </sheet>
+                <chatter/>
+            </form>
+        </field>
+    </record>
+
+    <!-- ═══════════════════════════════════════════════════════
+         Unit – Search View
+    ═══════════════════════════════════════════════════════ -->
+    <record id="view_nahj_unit_search" model="ir.ui.view">
+        <field name="name">nahj.unit.search</field>
+        <field name="model">nahj.unit</field>
+        <field name="arch" type="xml">
+            <search string="Search Units | بحث الوحدات">
+                <field name="name" string="Unit Number | رقم الوحدة"/>
+                <field name="tower_id" string="Tower | البرج"/>
+                <field name="resident_id" string="Resident | الساكن"/>
+                <separator/>
+                <filter string="Occupied | مشغولة" name="occupied"
+                        domain="[('state','=','occupied')]"/>
+                <filter string="Vacant | شاغرة" name="vacant"
+                        domain="[('state','=','vacant')]"/>
+                <separator/>
+                <filter string="Active Subscription | اشتراك فعال" name="sub_active"
+                        domain="[('subscription_state','=','active')]"/>
+                <filter string="Inactive Subscription | اشتراك غير فعال" name="sub_inactive"
+                        domain="[('subscription_state','=','inactive')]"/>
+                <filter string="Has Discount | لديه خصم" name="has_discount"
+                        domain="[('discount_type','!=','none')]"/>
+                <filter string="Expiring Lease | عقد ينتهي قريباً" name="expiring"
+                        domain="[('lease_status','=','expiring')]"/>
+                <filter string="Expired Lease | عقد منتهي" name="expired"
+                        domain="[('lease_status','=','expired')]"/>
+                <group expand="1" string="Group By | تجميع حسب">
+                    <filter string="Tower | البرج" name="group_by_tower"
+                            context="{'group_by': 'tower_id'}"/>
+                    <filter string="Floor | الطابق" name="group_by_floor"
+                            context="{'group_by': 'floor'}"/>
+                    <filter string="Status | الحالة" name="group_by_state"
+                            context="{'group_by': 'state'}"/>
+                </group>
+            </search>
+        </field>
+    </record>
+
+    <!-- ═══════════════════════════════════════════════════════
+         Unit – Action
+    ═══════════════════════════════════════════════════════ -->
+    <record id="action_nahj_unit" model="ir.actions.act_window">
+        <field name="name">Units</field>
+        <field name="res_model">nahj.unit</field>
+        <field name="view_mode">list,form</field>
+        <field name="search_view_id" ref="view_nahj_unit_search"/>
+        <field name="help" type="html">
+            <p class="o_view_nocontent_smiling_face">
+                Add your first unit!
+            </p>
+            <p>Create unit records for each apartment in your tower.</p>
+        </field>
+    </record>
+
+</odoo>

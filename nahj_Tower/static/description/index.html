@@ -1,0 +1,94 @@
+# Nahj Tower – نهج تاور
+
+**Residential Tower Management System | نظام إدارة الأبراج السكنية**
+
+---
+
+## Overview | نظرة عامة
+
+**Nahj Tower** is a simple and practical Odoo 17 application for managing residential
+towers. It focuses on the individual user experience and covers everything needed to
+run a residential building: units, residents, monthly subscriptions, and expenses.
+
+**نهج تاور** هو تطبيق أودو 17 بسيط وعملي لإدارة الأبراج السكنية، يتمحور حول
+تجربة المستخدم الفردي ويغطي كل ما تحتاجه لإدارة مبنى سكني: الوحدات، السكان،
+الاشتراكات الشهرية، والمصاريف.
+
+---
+
+## Features | المميزات
+
+### 🏢 Tower Management | إدارة الأبراج
+- Create and manage one or more residential towers.
+- Track basic info: name, address, city.
+- Instant financial summary: subscriptions collected, expenses, and current balance.
+
+### 🚪 Unit Management | إدارة الوحدات
+- Define units with floor number, unit number, and status (Occupied / Vacant).
+- Set a fixed monthly subscription amount per unit.
+- Link a resident to each unit.
+
+### 👤 Resident Management | إدارة السكان
+- Store resident details: name, phone, email, ID number.
+- Each resident can be linked to one or more units.
+
+### 💳 Monthly Subscriptions | الاشتراكات الشهرية
+- Generate subscriptions for all units in a tower in one click via the wizard.
+- Track subscription status: Paid / Unpaid.
+- Record payment date per subscription.
+
+### 💰 Expense Management | إدارة المصاريف
+- Record building expenses (doorman, electricity, water, cleaning, maintenance, etc.).
+- Categorize expenses with predefined categories.
+
+### 📊 Dashboard | لوحة التحكم
+- Kanban dashboard card per tower showing:
+  - Total / Occupied / Vacant unit counts.
+  - Total subscriptions collected.
+  - Total expenses.
+  - Current balance (subscriptions − expenses).
+  - Number of overdue units.
+
+### 🌐 Bilingual (Arabic + English) | ثنائي اللغة
+- Full Arabic translation included (`i18n/ar.po`).
+- Switch between Arabic (RTL) and English (LTR) from Odoo user preferences.
+
+### 🔌 REST API
+- Simple read-only JSON API for connecting an external frontend.
+- Protected by a configurable API key (system parameter: `nahj_tower.api_key`).
+- Endpoints:
+  - `GET /api/nahj/towers`
+  - `GET /api/nahj/towers/<id>`
+  - `GET /api/nahj/towers/<id>/units`
+  - `GET /api/nahj/subscriptions?tower_id=&state=&year=&month=`
+  - `GET /api/nahj/expenses?tower_id=`
+
+---
+
+## Installation | التثبيت
+
+1. Copy the `nahj_Tower` folder to your Odoo `addons` directory.
+2. Update the apps list (Settings → Apps → Update Apps List).
+3. Search for **Nahj Tower** and click **Install**.
+4. (Optional) Install Arabic language from Settings → Translations → Languages.
+
+---
+
+## API Key Setup | إعداد مفتاح API
+
+Go to **Settings → Technical → Parameters → System Parameters** and create:
+
+| Key | Value |
+|-----|-------|
+| `nahj_tower.api_key` | `<your-secret-key>` |
+
+Then use the key in your API requests:
+```
+Authorization: Bearer <your-secret-key>
+```
+
+---
+
+## License | الرخصة
+
+LGPL-3
